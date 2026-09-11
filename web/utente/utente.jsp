@@ -95,6 +95,7 @@
                     }
                 });
             }
+           
         </script>
     </head>
     <body>
@@ -137,8 +138,9 @@
                            <div class="etichetta">Ruolo</div>
                             <div class="valore">
                                 <select campo_da_modificare="ruolo" id_utente="<%=id_utente%>" onchange="modifica_utente(this)">
-                                    <option value="ADMIN" <%=Utility.selected_se_uguali(utente.getRuolo(),"AMMINISTRATORE")%>>Amministratore</option>
+                                    <option value="AMMINISTRATORE" <%=Utility.selected_se_uguali(utente.getRuolo(),"AMMINISTRATORE")%>>Amministratore</option>
                                     <option value="DIPENDENTE" <%=Utility.selected_se_uguali(utente.getRuolo(),"DIPENDENTE")%>>Dipendente</option>
+                                    <option value="TECNICO" <%=Utility.selected_se_uguali(utente.getRuolo(),"DIPENDENTE")%>>Tecnico</option>
                                 </select>
                             </div>
                                 
@@ -152,8 +154,41 @@
                                 </div>
                             </div>                  
                         </div>
-                       
+
+                                    
+                        <div class="box">
+                            <h2>Foto Utente</h2>
+                            <%String queryallegati=" allegati.rif='UTENTE_IMMAGINE' AND allegati.idrif="+Utility.is_null(id_utente)+" AND allegati.stato='1' ORDER BY allegati.id DESC";%>
+                            <jsp:include page="../_allegati.jsp">
+                                <jsp:param name="query" value="<%=queryallegati%>"></jsp:param>
+                                <jsp:param name="id_rif" value="<%=id_utente%>"></jsp:param>
+                                <jsp:param name="rif" value="UTENTE_IMMAGINE"></jsp:param>
+                            </jsp:include>
+                            <% if(utente.getImmagine()==null || utente.getImmagine().equals("")){%>
+                            <div class="height-10"></div>
+                            <jsp:include page="../_nuovo_allegato.jsp">
+                                <jsp:param name="idrif" value="<%=id_utente%>"></jsp:param>
+                                <jsp:param name="rif" value="UTENTE_IMMAGINE"></jsp:param>
+                            </jsp:include>
+                            <%}%>
+                            <div class="height-10"></div>
+                            <h2>Immagine Firma</h2>
+                            <% queryallegati=" allegati.rif='UTENTE_FIRMA' AND allegati.idrif="+Utility.is_null(id_utente)+" AND allegati.stato='1' ORDER BY allegati.id DESC";%>
+                            <jsp:include page="../_allegati.jsp">
+                                <jsp:param name="query" value="<%=queryallegati%>"></jsp:param>
+                                <jsp:param name="id_rif" value="<%=id_utente%>"></jsp:param>
+                                <jsp:param name="rif" value="UTENTE_FIRMA"></jsp:param>
+                            </jsp:include>
+                            <% if(utente.getFirma()==null || utente.getFirma().equals("")){%>
+                                <div class="height-10"></div>
+                                <jsp:include page="../_nuovo_allegato.jsp">
+                                    <jsp:param name="idrif" value="<%=id_utente%>"></jsp:param>
+                                    <jsp:param name="rif" value="UTENTE_FIRMA"></jsp:param>
+                                </jsp:include>
+                            <%}%>
+                        </div>
                     </div>
+                    
                     
                  
                     </div>
@@ -162,5 +197,16 @@
                 </div>
             </div>
         </div>
+        <script>
+             
+            function aggiorna_allegatiUTENTE_IMMAGINE_<%=utente.getId()%>(){
+                mostra_loader("Operazione in corso...");                
+                location.reload();
+            }
+            function aggiorna_allegatiUTENTE_FIRMA_<%=utente.getId()%>(){
+                mostra_loader("Operazione in corso...");
+                location.reload();
+            }
+        </script>
     </body>
 </html>

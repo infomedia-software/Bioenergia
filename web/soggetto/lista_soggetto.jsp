@@ -195,15 +195,15 @@
                                 <i class="fa-solid fa-magnifying-glass"></i> Cerca
                             </button>
 
-                            <button type="button" onclick="mostra_filtri_avanzati()">
+                            <button type="button" onclick="mostra_filtri_avanzati()" class="arancio">
                                 <i class="fa-solid fa-sliders"></i> Filtri
                             </button>
 
-                            <button type="button" onclick="azzera_ricerca()">
+                            <button type="button" onclick="azzera_ricerca()" class="rosso">
                                 <i class="fa-solid fa-rotate-left"></i> Azzera
                             </button>
 
-                            <button type="button" onclick="nuovo_soggetto()">
+                            <button type="button" onclick="nuovo_soggetto()" class="verde">
                                 <i class="fa-solid fa-plus"></i> <%=testo_nuovo%>
                             </button>
 

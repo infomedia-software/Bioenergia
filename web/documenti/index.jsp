@@ -1,3 +1,6 @@
+<%@page import="java.util.Map"%>
+<%@page import="beans.Item"%>
+<%@page import="gestioneDB.GestioneItems"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="beans.Documento"%>
 <%@page import="beans.Soggetto"%>
@@ -9,10 +12,7 @@
 <%
     Soggetto utente=(Soggetto)session.getAttribute("utente");
     boolean amministratore=utente!=null && utente.is_amministratore();
-
     String tipo=Utility.elimina_null(request.getParameter("tipo")).trim();
-    if(tipo.equals("")) tipo="contratto";
-
     String cerca=Utility.elimina_null(request.getParameter("cerca")).trim();
     String id_soggetto=Utility.elimina_null(request.getParameter("id_soggetto")).trim();
     String id_autore=amministratore ? Utility.elimina_null(request.getParameter("id_autore")).trim() : "";
@@ -28,7 +28,7 @@
     String id_situazione=Utility.elimina_null(request.getParameter("id_situazione")).trim();
     String data_da=Utility.elimina_null(request.getParameter("data_da")).trim();
     String data_a=Utility.elimina_null(request.getParameter("data_a")).trim();
-
+    Map<String,Item> mappa_situazioni=GestioneItems.getIstanza().mappa("documento", "id_situazione");
     if(!id_soggetto.matches("\\d+")) id_soggetto="";
     if(!id_autore.matches("\\d+")) id_autore="";
     if(!id_situazione.matches("\\d+")) id_situazione="";
@@ -56,7 +56,7 @@
 
     if(!cliente.equals("")){
         String cliente_sql=cliente.replace("'","''");
-        query+=" AND (documento.cliente_nome LIKE '%"+cliente_sql+"%' OR documento.cliente_cognome LIKE '%"+cliente_sql+"%')";
+        query+=" AND (documento.cliente_nome LIKE '%"+cliente_sql+"%' OR documento.cliente_cognome LIKE '%"+cliente_sql+"%' OR documento.cliente_ragione_sociale LIKE '%"+cliente_sql+"%')";
     }
 
     if(!ragione_sociale.equals("")) query+=" AND documento.cliente_ragione_sociale LIKE '%"+ragione_sociale.replace("'","''")+"%'";
@@ -92,7 +92,8 @@
     boolean filtri_aperti=!id_soggetto.equals("") || (amministratore && !id_autore.equals("")) || !numero.equals("") || !cliente.equals("") || !ragione_sociale.equals("") || !cf_piva.equals("") || !indirizzo.equals("") || !comune.equals("") || !provincia.equals("") || !cap.equals("") || !telefono.equals("") || !id_situazione.equals("") || !data_da.equals("") || !data_a.equals("");
 
     String titolo="Documenti";
-    if(tipo.equals("contratto")) titolo="Contratti";
+    if(tipo.equals("contratto"))
+        titolo="Contratti";
 %>
 
 <html>
@@ -141,25 +142,25 @@
                         <input type="hidden" name="tipo" value="<%=tipo%>">
                         <input type="hidden" id="pagina" name="pagina" value="1">
                         <div class="ricerca-principale">
-                            <input type="text" name="cerca" value="<%=cerca%>" placeholder="Cerca..." style="flex:1;">
+                            <input type="text" name="cerca" value="<%=cerca%>" placeholder="Cerca per cliente, indirizzo, numero, tel, ecc..." style="flex:1;">
                             <button type="submit">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                                 Cerca
                             </button>
 
-                            <button type="button" onclick="mostra_filtri_avanzati()">
+                            <button type="button" class="arancio" onclick="mostra_filtri_avanzati()">
                                 <i class="fa-solid fa-sliders"></i>
                                 Filtri
                             </button>
 
-                            <button type="button" onclick="azzera_ricerca()">
+                            <button type="button" class="rosso" onclick="azzera_ricerca()">
                                 <i class="fa-solid fa-rotate-left"></i>
                                 Azzera
                             </button>
 
-                            <button type="button" onclick="aggiungi_documento()">
+                            <button type="button" class="verde" onclick="aggiungi_documento()">
                                 <i class="fa-solid fa-plus"></i>
-                                <%=tipo.toUpperCase()%>
+                                Contratto
                             </button>
 
                         </div>
@@ -169,7 +170,7 @@
                             <tr>
                                 <%if(amministratore){%>
                                 <td>
-                                    <label>Autore</label>
+                                    <label>Consulente</label>
                                     <select name="id_autore">
                                         <option value="">Tutti</option>
                                         <%for(Soggetto autore_temp : lista_autore){
@@ -183,72 +184,68 @@
                                 <%}%>
 
                                 <td>
-                                    <label>Numero</label>
+                                    <label>Numero</label><br>
                                     <input type="text" name="numero" value="<%=numero%>">
                                 </td>
 
                                 <td>
-                                    <label>Data da</label>
-                                    <input type="date" name="data_da" value="<%=data_da%>">
+                                    <label>Data da</label><br>
+                                    <input type="date" name="data_da" value="<%=data_da%>" style="width: 125px;">
                                 </td>
 
                                 <td>
-                                    <label>Data a</label>
-                                    <input type="date" name="data_a" value="<%=data_a%>">
+                                    <label>Data a</label><br>
+                                    <input type="date" name="data_a" value="<%=data_a%>" style="width: 125px;">
                                 </td>
                             </tr>
 
                             <tr>
                                 <td>
-                                    <label>Cliente</label>
-                                    <input type="text" name="cliente" value="<%=cliente%>" placeholder="Nome o cognome">
+                                    <label>Cliente</label><br>
+                                    <input type="text" name="cliente" value="<%=cliente%>" placeholder="Nome, Cognome, Ragione Sociale">
                                 </td>
 
-                                <td>
-                                    <label>Ragione sociale</label>
-                                    <input type="text" name="ragione_sociale" value="<%=ragione_sociale%>">
-                                </td>
+                             
 
                                 <td>
-                                    <label>CF / P.IVA</label>
+                                    <label>CF / P.IVA</label><br>
                                     <input type="text" name="cf_piva" value="<%=cf_piva%>">
                                 </td>
-
-                                <td>
-                                    <label>Indirizzo</label>
-                                    <input type="text" name="indirizzo" value="<%=indirizzo%>">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    <label>Comune</label>
+                                
+                                 <td>
+                                    <label>Comune</label><br>
                                     <input type="text" name="comune" value="<%=comune%>">
                                 </td>
 
                                 <td>
-                                    <label>Provincia</label>
+                                    <label>Provincia</label><br>
                                     <input type="text" name="provincia" value="<%=provincia%>">
                                 </td>
 
-                                <td>
-                                    <label>CAP</label>
-                                    <input type="text" name="cap" value="<%=cap%>">
-                                </td>
-
-                                <td>
-                                    <label>Telefono / Cellulare</label>
-                                    <input type="text" name="telefono" value="<%=telefono%>">
-                                </td>
                             </tr>
 
                             <tr>
+                               
+
+
                                 <td>
-                                    <label>Situazione</label>
-                                    <input type="text" name="id_situazione" value="<%=id_situazione%>">
+                                    <label>Telefono / Cellulare</label><br>
+                                    <input type="text" name="telefono" value="<%=telefono%>">
+                                </td>
+                            
+                                <td>
+                                    <label>Situazione</label><br>
+                                    <select name="id_situazione">
+                                        <option value="">Tutte</option>
+                                        <% for(Item item:mappa_situazioni.values()){ %>
+                                            <option value="<%=item.getId()%>" <% if(id_situazione.equals(item.getId())){%>selected<%}%>>
+                                                <%=item.getValore()%>
+                                            </option>
+                                        <% } %>
+                                    </select>
                                 </td>
 
-                                <td colspan="3" style="vertical-align:bottom;">
+                                <td colspan="2" style="vertical-align:bottom;">
                                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Applica filtri</button>
                                 </td>
                             </tr>
@@ -256,7 +253,7 @@
                     </div>
 
 
-                <div style="margin-bottom:10px;">
+                <div style="margin:10px;">
                     Risultati:
                     <strong><%=totale_record%></strong>
                 </div>
@@ -266,22 +263,21 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Numero</th>
-                                <th>Data</th>
+                                <th style="width: 50px;">N.</th>
+                                <th style="width: 100px;">Data</th>
                                 <%if(amministratore){%>
-                                    <th>Autore</th>
+                                    <th>Consulente</th>
                                 <%}%>
                                 <th>Cliente</th>
-                                <th>Ragione Sociale</th>
                                 <th>CF / P.IVA</th>
-                                <th>Indirizzo</th>
+                                <!--th>Indirizzo</th-->
                                 <th>Comune</th>
                                 <th>Provincia</th>
-                                <th>Cap</th>
+                                
                                 <th>Tel.</th>
                                 <th>Totale</th>
                                 <th>Stato</th>
-                                <th style="width:90px;"></th>
+                                <th style="width:30px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -295,20 +291,34 @@
                                     <td><%=documento.getAutore().getCognome()%> <%=documento.getAutore().getNome()%></td>
                                 <%}%>
                                 
-                                <td><%=documento.getCliente_cognome()%> <%=documento.getCliente_nome()%></td>
-                                <td><%=documento.getCliente_ragione_sociale()%></td>
+                                <td>
+                                    <% if(documento.getCliente_privato_azienda().equals("azienda")){%>
+                                        <%=documento.getCliente_ragione_sociale()%>
+                                    <%}else{%>
+                                        <%=documento.getCliente_cognome()%> <%=documento.getCliente_nome()%>
+                                    <%}%>
+                                </td>
                                 <td><%=documento.getCf_piva()%></td>
-                                <td><%=documento.getCliente_indirizzo()%></td>
+                                <!--td><%=documento.getCliente_indirizzo()%></td-->
                                 <td><%=documento.getCliente_comune()%></td>
                                 <td><%=documento.getCliente_provincia()%></td>
-                                <td><%=documento.getCliente_cap()%></td>
+                                
                                 <td><%=documento.getCliente_cellulare()%></td>
                                 <td style="text-align:right;"><%=Utility.formatta_prezzo(documento.getTotale())%></td>
-                                <td><%=documento.getId_situazione()%></td>
+                                <td>
+                                    <%
+                                        Item situazione=mappa_situazioni.get(documento.getId_situazione()+"");                                        
+                                        if(situazione!=null){
+                                    %>
+                                        <span style="background:<%=situazione.getColore()%>;color:#fff;padding:4px 8px;border-radius:5px;white-space:nowrap;">
+                                            <%=situazione.getValore().toUpperCase()%>
+                                        </span>
+                                    <% } %>
+                                </td>
                                 <td style="text-align:center;">
-                                    <a class="pulsante" href="documento.jsp?id_documento=<%=documento.getId()%>">
+                                    <a class="pulsante_small" href="documento.jsp?id_documento=<%=documento.getId()%>">
                                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                        Dettagli
+                                        
                                     </a>
                                 </td>
 

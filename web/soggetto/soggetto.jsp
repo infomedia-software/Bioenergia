@@ -1,3 +1,9 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Map"%>
+<%@page import="gestioneDB.GestioneItems"%>
+<%@page import="beans.Documento"%>
+<%@page import="beans.Item"%>
+<%@page import="gestioneDB.GestioneDocumento"%>
 <%@page import="enums.SoggettoTipologia"%>
 <%@page import="beans.Soggetto"%>
 <%@page import="gestioneDB.GestioneSoggetto"%>
@@ -6,9 +12,10 @@
 <!DOCTYPE html>
 
 <%
+    Soggetto utente=(Soggetto)session.getAttribute("utente");
     String id_soggetto = Utility.elimina_null(request.getParameter("id_soggetto"));
     Soggetto soggetto = GestioneSoggetto.getIstanza().get_soggetto(id_soggetto);
-
+    Map<String,Item> mappa_situazioni=GestioneItems.getIstanza().mappa("documento", "id_situazione");
     if(soggetto == null){
         response.sendRedirect(Utility.url + "/soggetto/lista_soggetto.jsp");
         return;
@@ -17,12 +24,13 @@
     String tipologia = "";
     if(soggetto.getTipologia() != null)
         tipologia = soggetto.getTipologia().name();
+    ArrayList<Documento> lista_documenti=GestioneDocumento.getIstanza().ricerca_documento(" documento.id_soggetto="+id_soggetto+" ", "", -1);
 %>
 
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title><%=Utility.elimina_null(soggetto.getRagione_sociale()).equals("") ? "Soggetto" : soggetto.getRagione_sociale()%> | <%=Utility.nome_software%></title>
+        <title><%=soggetto.toString()%> | <%=Utility.nome_software%></title>
 
         <jsp:include page="../_importazioni.jsp"></jsp:include>
 
@@ -95,7 +103,7 @@
 
             <div id="content">
 
-                <h1><%=Utility.elimina_null(soggetto.getRagione_sociale()).equals("") ? "Nuovo soggetto" : soggetto.getRagione_sociale()%></h1>
+                <h1><%=soggetto.toString()%></h1>
 
                 <div class="box">
                     <a class="pulsante" href="<%=Utility.url%>/soggetto/lista_soggetto.jsp?tipologia=<%=tipologia%>">
@@ -257,15 +265,88 @@
                         <div class="box">
                             <h2>Note</h2>
 
-                            <div class="valore">
+                            
                                 <textarea campo_da_modificare="note" id_soggetto="<%=id_soggetto%>" onchange="modifica_soggetto(this)" style="width:100%; min-height:130px;"><%=Utility.elimina_null(soggetto.getNote())%></textarea>
-                            </div>
+                            
                         </div>
+                        <div class="clear"></div>
                     </div>
 
-                    <div class="clear"></div>
+                
+                    
                 </div>
+                <div class="col_100">
+                    <div class="box">
+                        <h2>Contratti</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;">N.</th>
+                                    <th style="width: 100px;">Data</th>
+                                    <%if(utente.is_amministratore()){%>
+                                        <th>Consulente</th>
+                                    <%}%>
+                                    
+                                    
+                                    <th>Indirizzo</th>
+                                    <th>Comune</th>
+                                    <th>Provincia</th>
 
+                                    <th>Tel.</th>
+                                    <th>Totale</th>
+                                    <th>Stato</th>
+                                    <th style="width:30px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <%for(Documento documento : lista_documenti){%>
+                                <tr>
+
+                                    <td><%=documento.getNumero_completo()%></td>
+                                    <td><%=documento.getData_it()%></td>
+                                    <%if(utente.is_amministratore()){%>
+                                        <td><%=documento.getAutore().getCognome()%> <%=documento.getAutore().getNome()%></td>
+                                    <%}%>
+                                    <td><%=documento.getCliente_indirizzo()%></td>
+                                    <td><%=documento.getCliente_comune()%></td>
+                                    <td><%=documento.getCliente_provincia()%></td>
+
+                                    <td><%=documento.getCliente_cellulare()%></td>
+                                    <td style="text-align:right;"><%=Utility.formatta_prezzo(documento.getTotale())%></td>
+                                    <td>
+                                        <%
+                                            Item situazione=mappa_situazioni.get(documento.getId_situazione()+"");                                        
+                                            if(situazione!=null){
+                                        %>
+                                            <span style="background:<%=situazione.getColore()%>;color:#fff;padding:4px 8px;border-radius:5px;white-space:nowrap;">
+                                                <%=situazione.getValore().toUpperCase()%>
+                                            </span>
+                                        <% } %>
+                                    </td>
+                                    <td style="text-align:center;">
+                                        <a class="pulsante_small" href="documento.jsp?id_documento=<%=documento.getId()%>">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+
+                                        </a>
+                                    </td>
+
+                                </tr>
+
+                                <%}%>
+
+
+                                <%if(lista_documenti.size()==0){%>
+                                <tr>
+                                    <td colspan="<%=utente.is_amministratore() ? "8" : "7"%>">
+                                        Nessun documento trovato
+                                    </td>
+                                </tr>
+                                <%}%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 

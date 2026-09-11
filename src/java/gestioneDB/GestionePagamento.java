@@ -68,9 +68,11 @@ public class GestionePagamento {
                 pagamento.setId_documento(rs.getInt("id_documento"));
                 pagamento.setId_soggetto(rs.getInt("id_soggetto"));
                 pagamento.setId_autore(rs.getInt("id_autore"));
-
+                pagamento.setDescrizione(rs.getString("descrizione"));
+                pagamento.setEntrata_uscita(rs.getString("entrata_uscita"));
+                pagamento.setFinanziamento(rs.getString("finanziamento"));
                 pagamento.setImporto(rs.getDouble("importo"));
-
+                pagamento.setPercentuale(rs.getDouble("percentuale"));
                 pagamento.setData_saldo(rs.getString("data_saldo"));
                 pagamento.setData_scadenza(rs.getString("data_scadenza"));
 
@@ -106,4 +108,16 @@ public class GestionePagamento {
 
         return null;
     }
+    
+    public String aggiorna_importi_pagamenti(String id_documento){
+        double totale=Utility.getIstanza().query_select_double("SELECT totale FROM documento WHERE id="+Utility.is_null(id_documento),"totale");
+
+        Utility.getIstanza().query(
+            "UPDATE pagamento SET importo=ROUND("+totale+"*percentuale/100,2) " +
+            "WHERE id_documento="+Utility.is_null(id_documento)
+        );
+
+        return "";
+    }
+    
 }

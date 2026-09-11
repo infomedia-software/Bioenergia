@@ -38,7 +38,11 @@
     </div>
     <div class="menu_utente">
         <div class="menu_utente_icona">
-            <i class="fa-solid fa-user"></i>
+            <% if(utente.getImmagine()==null || utente.getImmagine().equals("")){%>
+                <i class="fa-solid fa-user"></i>
+            <%}else{%>
+                <img src="<%=Utility.url%>/allegati/<%=utente.getImmagine()%>" style="width: 100%;">
+            <%}%>
         </div>
         <div class="menu_utente_testo">
             <span class="menu_utente_nome"><%=nome_utente%></span>
@@ -76,20 +80,5 @@
         </div>
     </div>
     
-    <%if(utente.is_amministratore()){%>
-    <div class="menu-gruppo <%=menu_configurazione ? "aperto" : ""%>">
-        <a href="javascript:void(0);" class="menu-voce" style="display: none;" onclick="$(this).closest('.menu-gruppo').toggleClass('aperto');">
-            <i class="fa-solid fa-sliders"></i>
-            <span>Configurazione</span>
-            <i class="fa-solid fa-chevron-down menu-freccia"></i>
-        </a>
-        <div class="sottomenu">
-            <a href="<%=Utility.url%>/macchina/macchine.jsp" class="<%=pagina.endsWith("macchine.jsp") ? "attivo" : ""%>">
-                <i class="fa-solid fa-print"></i>
-                <span>Macchine</span>
-            </a>
-            
-        </div>
-    </div>
-    <%}%>
+  
 </div>

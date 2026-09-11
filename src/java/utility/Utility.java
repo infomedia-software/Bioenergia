@@ -3,16 +3,24 @@ package utility;
 import connection.ConnectionPoolException;
 import gestioneDB.DBConnection;
 import gestioneDB.DBUtility;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
 
 
 public class Utility {
@@ -27,18 +35,11 @@ public class Utility {
         return istanza;
     }
     
-
-   
-    public static String url="http://localhost:8084/Bioenergia";
-    public static String url_allegati="http://localhost:8084/Bioenergia/allegati/";
-    public static String percorso_tomcat="C:\\\\Program Files (x86)\\Apache Software Foundation\\Tomcat 8.5\\webapps\\Bioenergia\\";
-   
-    /*
-    public static String url="https://app.infomediatek.it/Bioenergia";
-    public static String socket_url="wss://app.infomediatek.it/Bioenergia/websocketendpoint";           
-    public static String percorso_tomcat="C:\\\\Program Files (x86)\\Apache Software Foundation\\Tomcat 8.5\\webapps\\Bioenergia\\";
-    */
-    
+    public static String url=Config.get("URL");
+    public static String url_allegati=Config.get("URL_ALLEGATI");
+    public static String socket_url=Config.get("SOCKET_URL");
+    public static String percorso_tomcat=Config.get("PERCORSO_TOMCAT");
+    public static String apiKey=Config.get("BREVO_API_KEY");
     public static int righe_pagina=30;
     
     public static String nome_software="Bioenergia - Infogest Infomedia";
@@ -297,8 +298,8 @@ public class Utility {
     
     public static String formatta_prezzo(double prezzo) {
         NumberFormat nf = NumberFormat.getNumberInstance(Locale.ITALY);
-        nf.setMinimumFractionDigits(3);
-        nf.setMaximumFractionDigits(3);
+        nf.setMinimumFractionDigits(2);
+        nf.setMaximumFractionDigits(2);
         return "&euro; "+nf.format(prezzo);
     }
     
@@ -426,4 +427,77 @@ public class Utility {
         return Math.max(pagine_normale, pagine_ruotato);
     }
     
+    
+     public static String indirizzoIP(HttpServletRequest request) throws IOException {  
+        URL whatismyip = new URL("http://checkip.amazonaws.com");
+        BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+        String ip_pubblico = in.readLine(); //you get the IP as a String                        
+        
+        
+        
+        String ip = request.getHeader("X-FORWARDED-FOR");  
+        if (ip == null) {  
+            ip = request.getRemoteAddr();  
+        }        
+        return ip_pubblico+"_"+ip;
+    }
+     
+     public static String decodifica_sha512(String input) throws NoSuchAlgorithmException {
+        String newHash = codifica_sha512(input);
+        //System.out.println("decodifico da SHA-512: "+newHash);
+        return newHash;
+    }
+     
+     public static String codifica_sha512(String input) throws NoSuchAlgorithmException {
+        // Ottieni un'istanza di MessageDigest per SHA-512
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+
+        // Converti l'input in un array di byte
+        byte[] hashBytes = md.digest(input.getBytes());
+
+        // Converti i byte dell'hash in formato esadecimale
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hashBytes) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        //System.out.println("codifico in SHA-512: " + hexString.toString());
+        return hexString.toString();
+    }
+     
+    public static boolean viene_prima(String data_ora_0,String data_ora_1){
+        boolean toReturn=false;
+        java.sql.Timestamp oldTime=convertiStringaInTimestamp(data_ora_0);
+        java.sql.Timestamp currentTime=convertiStringaInTimestamp(data_ora_1);
+        long milliseconds1 = oldTime.getTime();
+        long milliseconds2 = currentTime.getTime();
+        long diff = milliseconds2 - milliseconds1;        
+        if(diff>=0)
+            toReturn=true;
+        return toReturn;
+    } 
+      
+    public static Timestamp convertiStringaInTimestamp(String yourString){
+       Timestamp toReturn=null;
+       try{
+           yourString=Utility.elimina_null(yourString).trim();
+
+           if(yourString.contains("/")){
+               java.time.LocalDateTime data=java.time.LocalDateTime.parse(
+                   yourString,
+                   java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+               );
+               toReturn=Timestamp.valueOf(data);
+           }else{
+               if(yourString.length()==16)
+                   yourString=yourString+":00";
+
+               toReturn=Timestamp.valueOf(yourString);
+           }
+       }catch(Exception e){
+           GestioneErrori.errore("Utility","convertiStringaInTimestamp",e);
+       }
+       return toReturn;
+   }
 }

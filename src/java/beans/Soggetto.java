@@ -67,6 +67,10 @@ public class Soggetto {
         return ruolo.equals("DIPENDENTE");
     }
     
+    public boolean is_tecnico(){
+        return ruolo.equals("TECNICO");
+    }
+    
     
     public Soggetto(){
         this.id="";

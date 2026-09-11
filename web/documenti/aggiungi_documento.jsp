@@ -53,9 +53,13 @@
                 if(obj.value=="privato"){
                     $("#riga_privato").css("display","table-row");
                     $("#riga_azienda").hide();
+                    $(".campo_azienda").hide();
+                    $(".campo_privato").show();
                     $("#ragione_sociale").val("");
                 }else{
                     $("#riga_privato").hide();
+                    $(".campo_privato").hide();
+                    $(".campo_azienda").show();
                     $("#riga_azienda").css("display","table-row");
                     $("#nome").val("");
                     $("#cognome").val("");
@@ -114,7 +118,7 @@
                         </tr>
                         <tr>
                             <td style="width:45%;">
-                                <label>Via *</label><br>
+                                <label>Indirizzo *</label><br>
                                 <input type="text" id="indirizzo" name="indirizzo"  required value="<%=cliente.getIndirizzo()%>">
                             </td>
                             <td style="width:10%;">
@@ -122,7 +126,7 @@
                                 <input type="text" id="cap" name="cap" maxlength="5"  required value="<%=cliente.getCap()%>">
                             </td>
                             <td style="width:35%;">
-                                <label>Località *</label><br>
+                                <label>Comune *</label><br>
                                 <input type="text" id="comune" name="comune"  required value="<%=cliente.getComune()%>">
                             </td>
                             <td style="width:10%;">
@@ -151,14 +155,14 @@
                                 <label>Codice fiscale*</label><br>
                                 <input type="text" id="cf" name="cf"  value="<%=cliente.getCf()%>">
                             </td>
-                            <td colspan="2">
+                            <td colspan="2" class="campo_azienda" style="display: none;">
                                 <label>Partita IVA*</label><br>
                                 <input type="text" id="piva" name="piva"  value="<%=cliente.getPiva()%>">
                             </td>
                         </tr>
                         <tr>
                             <td colspan="4" style="text-align:right;">
-                                <button type="submit" class="pulsante">Continua</button>
+                                <button type="submit" class="pulsante"><i class="fa-solid fa-save"></i>Continua</button>
                             </td>
                         </tr>
                     </table>

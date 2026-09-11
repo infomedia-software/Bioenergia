@@ -8,9 +8,12 @@ public class Pagamento {
     private int id_autore;
 
     private double importo;
-
+    private double percentuale;
+    private String descrizione = "";
     private String data_saldo = "";
     private String data_scadenza = "";
+    private String entrata_uscita = "";
+    private String finanziamento = "";
 
     private String metodo = "";
     private String saldato = "";
@@ -133,6 +136,39 @@ public class Pagamento {
     public void setDocumento(Documento documento) {
         this.documento = documento;
     }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
+    public String getEntrata_uscita() {
+        return entrata_uscita;
+    }
+
+    public void setEntrata_uscita(String entrata_uscita) {
+        this.entrata_uscita = entrata_uscita;
+    }
+
+    public String getFinanziamento() {
+        return finanziamento;
+    }
+
+    public void setFinanziamento(String finanziamento) {
+        this.finanziamento = finanziamento;
+    }
+
+    public double getPercentuale() {
+        return percentuale;
+    }
+
+    public void setPercentuale(double percentuale) {
+        this.percentuale = percentuale;
+    }
+    
     
     
 }

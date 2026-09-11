@@ -93,11 +93,11 @@
                 </div>
 
                 <div style="margin-bottom:10px;">Utenti trovati: <strong><%=totale_record%></strong></div>
-
+                <div class="box">
                 <table>
                     <thead>
                         <tr>
-                            <th>Codice</th>
+                            <th>Ruolo</th>
                             <th>Cognome</th>
                             <th>Nome</th>
                             <th>Telefono</th>
@@ -108,7 +108,7 @@
                     <tbody>
                         <%for(Soggetto utente:lista_utente){%>
                         <tr>
-                            <td><%=Utility.elimina_null(utente.getCodice())%></td>
+                            <td><%=Utility.elimina_null(utente.getRuolo())%></td>
                             <td><%=Utility.elimina_null(utente.getCognome())%></td>
                             <td><%=Utility.elimina_null(utente.getNome())%></td>
                             <td><%=Utility.elimina_null(utente.getTelefono())%></td>
@@ -121,7 +121,7 @@
                         <%}%>
                     </tbody>
                 </table>
-
+                </div>
                 <%if(totale_pagine>1){%>
                 <div class="box" style="text-align:center;margin-top:16px;">
                     <%if(pagina>1){%>

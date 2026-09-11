@@ -762,7 +762,7 @@ button:hover,
 input[type=submit]:hover,
 input[type=button]:hover,
 .pulsante:hover {
-    background: #0b4fc7;
+    opacity:0.7;
     box-shadow: 0 4px 10px rgba(15, 94, 234, .18);
 }
 
@@ -1885,4 +1885,76 @@ textarea:focus-visible,
     font-size: 13px;
     font-family: Arial, Helvetica, sans-serif;
     transition: border-color .15s, box-shadow .15s, background .15s;
+}
+
+input[type="radio"] {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #071b4f;
+    vertical-align: middle;
+}
+
+.campo_errore{
+    border:2px solid #e53935 !important;
+    background:#fff5f5 !important;
+}
+
+.ok{
+    background:#28a745 !important;
+    color:#fff !important;
+    border-color:#28a745 !important;
+}
+
+
+#loader{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,.85);
+    z-index:999999;
+    align-items:center;
+    justify-content:center;
+}
+
+#loader_box{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+}
+
+.loader_logo{
+    width:80px;
+    height:80px;
+    object-fit:contain;
+}
+
+#loader_testo{
+    font-size:14px;
+    font-weight:600;
+    color:#555;
+}
+
+.loader_barra{
+    width:180px;
+    height:6px;
+    background:#e5e5e5;
+    border-radius:10px;
+    overflow:hidden;
+    position:relative;
+}
+
+.loader_barra_animata{
+    position:absolute;
+    top:0;
+    left:-70px;
+    width:70px;
+    height:100%;
+    background:#f2d500;
+    border-radius:10px;
 }

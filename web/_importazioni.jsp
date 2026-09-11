@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="<%=Utility.url%>/css/stile.css?v=1.0.2">
+<link rel="stylesheet" href="<%=Utility.url%>/css/stile.css?v=2">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -15,7 +15,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link rel="icon" type="image/png" href="<%=Utility.url%>/img/bioenergia.png">
+
+<!-- Upload File-->   
+<script src="<%=Utility.url%>/js/upload/js/vendor/jquery.ui.widget.js"></script>
+<script src="<%=Utility.url%>/js/upload/js/jquery.iframe-transport.js"></script>
+<script src="<%=Utility.url%>/js/upload/js/jquery.fileupload.js"></script>
+<script src="<%=Utility.url%>/js/upload/js/load-image.min.js"></script>
+<script src="<%=Utility.url%>/js/upload/js/canvas-to-blob.min.js"></script>    
+<script src="<%=Utility.url%>/js/upload/js/jquery.fileupload-process.js"></script>
+<script src="<%=Utility.url%>/js/upload/js/jquery.fileupload-image.js"></script>
+<link rel="stylesheet" href="<%=Utility.url%>/js/upload/css/jquery.fileupload.css">
+
+<link rel="icon" type="image/png" href="<%=Utility.url%>/img/favicon.png">
 
 
 <script type="text/javascript">
@@ -30,17 +41,25 @@
         $("#"+id_box).load(url_pagina,function(){nascondi_loader();});
     }
     
-    
-    
-    
-    function mostra_loader(testo){
-        $("#loader_testo").html(testo && testo!="" ? testo : "Caricamento...");
-        $("#loader").stop(true, true).css("display","flex").hide().fadeIn(120);
+    function anima_loader(){
+     $(".loader_barra_animata")
+         .stop()
+         .css("left","-70px")
+         .animate({left:"180px"},900,"linear",function(){
+             anima_loader();
+         });
     }
 
-    function nascondi_loader(){
-        $("#loader").stop(true, true).fadeOut(120);
-    }
+     function mostra_loader(testo){
+         $("#loader_testo").html(testo || "Caricamento in corso...");
+         $("#loader").css("display","flex");
+         anima_loader();
+     }
+
+     function nascondi_loader(){
+         $(".loader_barra_animata").stop();
+         $("#loader").hide();
+     }
     
     function logout(){
         mostra_loader("Logout in corso...");
@@ -100,4 +119,25 @@
             chiudi_menu();
     });
    
+    function function_modifica_documento(id_documento,campo,new_valore,refresh){
+        if(refresh=="si")
+            mostra_loader("Operazione in corso...");
+        $.ajax({
+            type:"POST",
+            url:"<%=Utility.url%>/documenti/__modifica_documento.jsp",
+            data:{
+                id_documento:id_documento,
+                campo_da_modificare:campo,
+                new_valore:new_valore
+            },
+            dataType:"html",
+            success:function(msg){
+                if(refresh=="si")
+                    aggiorna_documento();
+            },
+            error:function(){
+                alert("Errore durante la modifica del documento");
+            }
+        });
+    }
 </script>

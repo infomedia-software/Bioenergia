@@ -1,12 +1,14 @@
 package beans;
 
+import utility.Utility;
+
 public class Documento {
 
     private int id;
     private int id_autore;
     private int id_soggetto;
     private int id_situazione;
-    
+    private Soggetto tecnico;
     private Soggetto autore;
     
     private String tipo = "";
@@ -18,6 +20,8 @@ public class Documento {
     private String data_creazione = "";
 
     private String firma_cliente = "";
+    private String firma_mandante = "";
+    
     private String osservazioni = "";
     private String servizi_inclusi = "";
     private String modalita_pagamento = "";
@@ -28,7 +32,7 @@ public class Documento {
     private double imponibile;
     private double iva;
     private double totale;
-    private double gse_prezzi;
+    private String gse_prezzi = "";
 
     private String pagamento = "";
     private String stato = "";
@@ -50,8 +54,17 @@ public class Documento {
     private String cliente_email = "";
     private String cliente_luogo_nascita = "";
     private String cliente_data_nascita = "";
-    private String cliente_qualifica = "";
-    private String cliente_societa_rappresentata = "";
+    
+    // DATI MANDANTE
+    private String mandante_nome = "";
+    private String mandante_cognome = "";
+    private String mandante_cf = "";
+    private String mandante_indirizzo = "";
+    private String mandante_comune = "";
+    private String mandante_provincia = "";
+    private String mandante_luogo_nascita = "";
+    private String mandante_data_nascita = "";
+    private String mandante_qualifica = "";
 
     // MODULO STRATIFICAZIONE MANTO DI COPERTURA
     private String abitazione_tipologia = "";
@@ -64,6 +77,7 @@ public class Documento {
     private String copertura_materiale = "";
     private String copertura_materiale_altro = "";
     private String copertura_struttura = "";
+    private String copertura_struttura_altro = "";
 
     // MODULO DETRAZIONE
     private String detrazione_intestatario = "";
@@ -72,6 +86,7 @@ public class Documento {
     private int immobile_num_unita;
     private String immobile_anno_costruzione = "";
     private String immobile_tipologia_edilizia = "";
+    private String immobile_tipologia_edilizia_altro = "";
     private String immobile_tipo_intervento = "";
     private String immobile_unita_intervento = "";
 
@@ -97,7 +112,16 @@ public class Documento {
     private String otp_data_ora_scadenza = "";
     private String otp_data_ora_verifica = "";
     private String otp_ip = "";
-    private String otp_id_soggetto_verifica = "";
+    
+    private String otp_sms_mandante="";
+    private String otp_hash_mandante="";
+    private String otp_data_ora_generazione_mandante="";
+    private String otp_data_ora_scadenza_mandante="";
+    private String otp_data_ora_verifica_mandante="";
+    private String otp_ip_mandante="";
+    private int otp_tentativi_falliti_mandante=0;
+    
+    private int otp_tentativi_falliti;
 
 
     public int getId() {
@@ -268,13 +292,15 @@ public class Documento {
         this.totale = totale;
     }
 
-    public double getGse_prezzi() {
+    public String getGse_prezzi() {
         return gse_prezzi;
     }
 
-    public void setGse_prezzi(double gse_prezzi) {
+    public void setGse_prezzi(String gse_prezzi) {
         this.gse_prezzi = gse_prezzi;
     }
+
+    
 
     public String getPagamento() {
         return pagamento;
@@ -412,21 +438,92 @@ public class Documento {
         this.cliente_data_nascita = cliente_data_nascita;
     }
 
-    public String getCliente_qualifica() {
-        return cliente_qualifica;
+    public String getFirma_mandante() {
+        if(isMandante_cliente())
+            return firma_cliente;
+        else
+            return firma_mandante;
     }
 
-    public void setCliente_qualifica(String cliente_qualifica) {
-        this.cliente_qualifica = cliente_qualifica;
+    public void setFirma_mandante(String firma_mandante) {
+        this.firma_mandante = firma_mandante;
     }
 
-    public String getCliente_societa_rappresentata() {
-        return cliente_societa_rappresentata;
+    public String getMandante_nome() {
+        if(mandante_nome.equals(""))
+            return cliente_nome;
+        else
+            return mandante_nome;
     }
 
-    public void setCliente_societa_rappresentata(String cliente_societa_rappresentata) {
-        this.cliente_societa_rappresentata = cliente_societa_rappresentata;
+    public void setMandante_nome(String mandante_nome) {
+        this.mandante_nome = mandante_nome;
     }
+
+    public String getMandante_cognome() {
+        if(mandante_cognome.equals(""))
+            return cliente_cognome;
+        else
+            return mandante_cognome;
+    }
+
+    public void setMandante_cognome(String mandante_cognome) {
+        this.mandante_cognome = mandante_cognome;
+    }
+
+    public String getMandante_cf() {
+        if(mandante_cf.equals(""))
+            return cliente_cf;
+        else
+            return mandante_cf;
+    }
+
+    public void setMandante_cf(String mandante_cf) {
+        this.mandante_cf = mandante_cf;
+    }
+
+    public String getMandante_indirizzo() {
+        if(mandante_indirizzo.equals(""))
+            return cliente_indirizzo;
+        else
+            return mandante_indirizzo;
+    }
+
+    public void setMandante_indirizzo(String mandante_indirizzo) {
+        this.mandante_indirizzo = mandante_indirizzo;
+    }
+
+    public String getMandante_comune() {
+        if(mandante_comune.equals(""))
+            return cliente_comune;
+        else
+            return mandante_comune;
+    }
+
+    public void setMandante_comune(String mandante_comune) {
+        this.mandante_comune = mandante_comune;
+    }
+
+    public String getMandante_provincia() {
+        if(mandante_provincia.equals(""))
+            return cliente_provincia;
+        else
+            return mandante_provincia;
+    }
+
+    public void setMandante_provincia(String mandante_provincia) {
+        this.mandante_provincia = mandante_provincia;
+    }
+
+    public String getMandante_qualifica() {
+        return mandante_qualifica;
+    }
+
+    public void setMandante_qualifica(String mandante_qualifica) {
+        this.mandante_qualifica = mandante_qualifica;
+    }
+
+    
 
     public String getAbitazione_tipologia() {
         return abitazione_tipologia;
@@ -509,7 +606,15 @@ public class Documento {
     }
 
     public String getDetrazione_intestatario() {
-        return detrazione_intestatario;
+        if(detrazione_intestatario.equals("")){
+            if(cliente_privato_azienda.equals("azienda"))
+                return cliente_ragione_sociale;
+            else
+                return cliente_cognome+" "+cliente_nome;
+        }
+        else{
+            return detrazione_intestatario;
+        }
     }
 
     public void setDetrazione_intestatario(String detrazione_intestatario) {
@@ -724,12 +829,60 @@ public class Documento {
         this.otp_ip = otp_ip;
     }
 
-    public String getOtp_id_soggetto_verifica() {
-        return otp_id_soggetto_verifica;
+    public String getOtp_sms_mandante() {
+        return otp_sms_mandante;
     }
 
-    public void setOtp_id_soggetto_verifica(String otp_id_soggetto_verifica) {
-        this.otp_id_soggetto_verifica = otp_id_soggetto_verifica;
+    public void setOtp_sms_mandante(String otp_sms_mandante) {
+        this.otp_sms_mandante=otp_sms_mandante;
+    }
+
+    public String getOtp_hash_mandante() {
+        return otp_hash_mandante;
+    }
+
+    public void setOtp_hash_mandante(String otp_hash_mandante) {
+        this.otp_hash_mandante=otp_hash_mandante;
+    }
+
+    public String getOtp_data_ora_generazione_mandante() {
+        return otp_data_ora_generazione_mandante;
+    }
+
+    public void setOtp_data_ora_generazione_mandante(String otp_data_ora_generazione_mandante) {
+        this.otp_data_ora_generazione_mandante=otp_data_ora_generazione_mandante;
+    }
+
+    public String getOtp_data_ora_scadenza_mandante() {
+        return otp_data_ora_scadenza_mandante;
+    }
+
+    public void setOtp_data_ora_scadenza_mandante(String otp_data_ora_scadenza_mandante) {
+        this.otp_data_ora_scadenza_mandante=otp_data_ora_scadenza_mandante;
+    }
+
+    public String getOtp_data_ora_verifica_mandante() {
+        return otp_data_ora_verifica_mandante;
+    }
+
+    public void setOtp_data_ora_verifica_mandante(String otp_data_ora_verifica_mandante) {
+        this.otp_data_ora_verifica_mandante=otp_data_ora_verifica_mandante;
+    }
+
+    public String getOtp_ip_mandante() {
+        return otp_ip_mandante;
+    }
+
+    public void setOtp_ip_mandante(String otp_ip_mandante) {
+        this.otp_ip_mandante=otp_ip_mandante;
+    }
+
+    public int getOtp_tentativi_falliti_mandante() {
+        return otp_tentativi_falliti_mandante;
+    }
+
+    public void setOtp_tentativi_falliti_mandante(int otp_tentativi_falliti_mandante) {
+        this.otp_tentativi_falliti_mandante=otp_tentativi_falliti_mandante;
     }
 
     public Soggetto getAutore() {
@@ -778,8 +931,90 @@ public class Documento {
     public void setCliente_privato_azienda(String cliente_privato_azienda) {
         this.cliente_privato_azienda = cliente_privato_azienda;
     }
+
+    public void setCopertura_struttura_altro(String copertura_struttura_altro) {
+        this.copertura_struttura_altro = copertura_struttura_altro;
+    }
+
+    public String getCopertura_struttura_altro() {
+        return copertura_struttura_altro;
+    }
     
     
+
+    public String getImmobile_tipologia_edilizia_altro() {
+        return immobile_tipologia_edilizia_altro;
+    }
+
+    public void setImmobile_tipologia_edilizia_altro(String immobile_tipologia_edilizia_altro) {
+        this.immobile_tipologia_edilizia_altro = immobile_tipologia_edilizia_altro;
+    }
+
+    public String getMandante_luogo_nascita() {
+        if(mandante_luogo_nascita.equals(""))
+            return cliente_luogo_nascita;
+        else
+            return mandante_luogo_nascita;
+    }
+
+    public void setMandante_luogo_nascita(String mandante_luogo_nascita) {
+        this.mandante_luogo_nascita = mandante_luogo_nascita;
+    }
+
+    public String getMandante_data_nascita() {
+        if(mandante_data_nascita==null || mandante_data_nascita.equals(""))
+            return cliente_data_nascita;
+        else
+            return mandante_data_nascita;
+    }
+
+    public void setMandante_data_nascita(String mandante_data_nascita) {
+        this.mandante_data_nascita = mandante_data_nascita;
+    }
+
+    public Soggetto getTecnico() {
+        return tecnico;
+    }
+
+    public void setTecnico(Soggetto tecnico) {
+        this.tecnico = tecnico;
+    }
+
+    public int getOtp_tentativi_falliti() {
+        return otp_tentativi_falliti;
+    }
+
+    public void setOtp_tentativi_falliti(int otp_tentativi_falliti) {
+        this.otp_tentativi_falliti = otp_tentativi_falliti;
+    }
+    
+    public boolean is_otp_verificato(){
+        if(otp_data_ora_verifica!=null)
+            return true;
+        else
+            return false;
+    }
+    
+    public boolean is_otp_verificato_mandante(){
+        if(otp_data_ora_verifica_mandante!=null)
+            return true;
+        else
+            return false;
+    }
+    
+    public boolean isMandante_cliente(){
+        if(cliente_privato_azienda.equals("azienda"))
+            return false;
+        return 
+            Utility.elimina_null(mandante_nome).equals("") &&
+            Utility.elimina_null(mandante_cognome).equals("") &&
+            Utility.elimina_null(mandante_cf).equals("") &&
+            Utility.elimina_null(mandante_indirizzo).equals("") &&
+            Utility.elimina_null(mandante_comune).equals("") &&
+            Utility.elimina_null(mandante_provincia).equals("") &&
+            Utility.elimina_null(mandante_luogo_nascita).equals("") &&
+            Utility.elimina_null(mandante_data_nascita).equals("");
+    }
     
     public String toString(){
         return (tipo==null || tipo.equals("") ? "" : tipo.replaceAll("_"," ").substring(0,1).toUpperCase()+tipo.substring(1))+" "+getNumero_completo();

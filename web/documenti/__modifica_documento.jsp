@@ -1,11 +1,42 @@
+<%@page import="beans.Documento"%>
+<%@page import="gestioneDB.GestioneDocumento"%>
 <%@page import="gestioneDB.GestioneSoggetto"%>
 <%@page import="beans.Soggetto"%>
 <%@page import="utility.Utility"%>
 <%
+    Soggetto utente=(Soggetto)session.getAttribute("utente");
     String id_documento=Utility.elimina_null(request.getParameter("id_documento"));
     String campo_da_modificare=Utility.elimina_null(request.getParameter("campo_da_modificare"));
     String new_valore=Utility.elimina_null(request.getParameter("new_valore"));
 
+    // PAGAMENTO
+    if(campo_da_modificare.equals("pagamento") ){
+        Documento d=GestioneDocumento.getIstanza().get_documento(id_documento);
+        String pagamento=d.getPagamento();
+        String id_soggetto=d.getId_soggetto()+"";
+        
+        // inserisce rate pagamento senza finanziamento
+        if(new_valore.contains("pagamento") && !pagamento.contains("pagamento")){
+            Utility.getIstanza().query_insert("INSERT INTO pagamento(entrata_uscita,id_documento,id_soggetto, id_autore, descrizione, stato) VALUES ('entrata',"+Utility.is_null(id_documento)+","+Utility.is_null(id_soggetto)+","+Utility.is_null(utente.getId())+",'al momento della stipula del presente contratto','1')");
+            Utility.getIstanza().query_insert("INSERT INTO pagamento(entrata_uscita,id_documento,id_soggetto,id_autore,descrizione,stato) VALUES ('entrata',"+Utility.is_null(id_documento)+","+Utility.is_null(id_soggetto)+","+Utility.is_null(utente.getId())+",'al momento dell''avviso della merce pronta','1')");
+            Utility.getIstanza().query_insert("INSERT INTO pagamento(entrata_uscita,id_documento,id_soggetto, id_autore, descrizione, stato) VALUES ('entrata',"+Utility.is_null(id_documento)+","+Utility.is_null(id_soggetto)+","+Utility.is_null(utente.getId())+",'al momento della fine installazione-montaggio','1')");
+        }
+        // inserisce pagamento con finanziamento
+        if(new_valore.contains("finanziamento") && !pagamento.contains("finanziamento")){
+            Utility.getIstanza().query_insert("INSERT INTO pagamento(entrata_uscita,finanziamento,id_documento,id_soggetto, id_autore, descrizione, stato) VALUES ('entrata','si',"+Utility.is_null(id_documento)+","+Utility.is_null(id_soggetto)+","+Utility.is_null(utente.getId())+",'','1')");
+        }
+        if(!new_valore.contains("pagamento"))
+            Utility.getIstanza().query("DELETE FROM pagamento WHERE id_documento="+Utility.is_null(id_documento)+" AND finanziamento='' ");
+        if(!new_valore.contains("finanziamento"))
+            Utility.getIstanza().query("DELETE FROM pagamento WHERE id_documento="+Utility.is_null(id_documento)+" AND finanziamento='si' ");
+        
+        // aggiorno il campo "pagamento"
+        Utility.getIstanza().query("UPDATE documento SET "+campo_da_modificare+"="+Utility.is_null(new_valore)+" WHERE id="+Utility.is_null(id_documento));
+        return;
+    }
+
+    
+    
     Utility.getIstanza().query("UPDATE documento SET "+campo_da_modificare+"="+Utility.is_null(new_valore)+" WHERE id="+Utility.is_null(id_documento));
     
     if(campo_da_modificare.equals("cliente_privato_azienda")){
@@ -66,4 +97,11 @@
                 Utility.getIstanza().query("UPDATE soggetto SET "+campo_soggetto+"="+Utility.is_null(new_valore)+" WHERE id="+Utility.is_null(id_soggetto));
         }
     }
+    
+    if(campo_da_modificare.equals("stato")){
+        Utility.getIstanza().query("UPDATE riga SET "+campo_da_modificare+"="+new_valore+" WHERE id_documento="+id_documento);
+        Utility.getIstanza().query("UPDATE pagamento SET "+campo_da_modificare+"="+new_valore+" WHERE id_documento="+id_documento);
+    }
+    
+  
 %>

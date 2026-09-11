@@ -57,9 +57,14 @@ public class GestioneDocumento {
 
             String query = "SELECT documento.*, "
                 + "soggetto.nome AS autore_nome, "
-                + "soggetto.cognome AS autore_cognome "
+                + "soggetto.cognome AS autore_cognome, "
+                + "soggetto.firma AS autore_firma, "
+                + "tecnico.nome AS tecnico_nome, "
+                + "tecnico.cognome AS tecnico_cognome, "
+                + "tecnico.firma AS tecnico_firma "
                 + "FROM documento "
                 + "LEFT OUTER JOIN soggetto ON soggetto.id=documento.id_autore "
+                + "LEFT OUTER JOIN soggetto AS tecnico ON tecnico.id=documento.id_tecnico "
                 + "WHERE documento.stato='1' ";
 
             if (query_input != null && !query_input.trim().equals("")) {
@@ -91,7 +96,15 @@ public class GestioneDocumento {
                 autore.setId(String.valueOf(documento.getId_autore()));
                 autore.setNome(rs.getString("autore_nome"));
                 autore.setCognome(rs.getString("autore_cognome"));
+                autore.setFirma(rs.getString("autore_firma"));
                 documento.setAutore(autore);
+                
+                Soggetto tecnico = new Soggetto();
+                tecnico.setId(rs.getString("id_tecnico"));
+                tecnico.setNome(rs.getString("tecnico_nome"));
+                tecnico.setCognome(rs.getString("tecnico_cognome"));
+                tecnico.setFirma(rs.getString("tecnico_firma"));
+                documento.setTecnico(tecnico);
 
                 documento.setTipo(rs.getString("tipo"));
                 documento.setNumero(rs.getInt("numero"));
@@ -101,10 +114,9 @@ public class GestioneDocumento {
                 documento.setData_modifica(rs.getString("data_modifica"));
                 documento.setData_creazione(rs.getString("data_creazione"));
 
-                documento.setFirma_cliente(rs.getString("firma_cliente"));
                 documento.setOsservazioni(rs.getString("osservazioni"));
                 documento.setServizi_inclusi(Utility.elimina_null(rs.getString("servizi_inclusi")));
-                documento.setModalita_pagamento(rs.getString("modalita_pagamento"));
+                documento.setModalita_pagamento(Utility.elimina_null(rs.getString("modalita_pagamento")));
 
                 documento.setNote1(rs.getString("note1"));
                 documento.setNote2(rs.getString("note2"));
@@ -113,7 +125,7 @@ public class GestioneDocumento {
                 documento.setImponibile(rs.getDouble("imponibile"));
                 documento.setIva(rs.getDouble("iva"));
                 documento.setTotale(rs.getDouble("totale"));
-                documento.setGse_prezzi(rs.getDouble("gse_prezzi"));
+                documento.setGse_prezzi(rs.getString("gse_prezzi"));
 
                 documento.setPagamento(rs.getString("pagamento"));
                 documento.setStato(rs.getString("stato"));
@@ -135,8 +147,21 @@ public class GestioneDocumento {
                 documento.setCliente_email(rs.getString("cliente_email"));
                 documento.setCliente_luogo_nascita(rs.getString("cliente_luogo_nascita"));
                 documento.setCliente_data_nascita(rs.getString("cliente_data_nascita"));
-                documento.setCliente_qualifica(rs.getString("cliente_qualifica"));
-                documento.setCliente_societa_rappresentata(rs.getString("cliente_societa_rappresentata"));
+                
+                // MANDANTE
+                documento.setMandante_nome(rs.getString("mandante_nome"));
+                documento.setMandante_cognome(rs.getString("mandante_cognome"));
+                documento.setMandante_comune(rs.getString("mandante_comune"));
+                documento.setMandante_indirizzo(rs.getString("mandante_indirizzo"));
+                documento.setMandante_provincia(rs.getString("mandante_provincia"));
+                documento.setMandante_cf(rs.getString("mandante_cf"));
+                documento.setMandante_qualifica(rs.getString("mandante_qualifica"));
+                documento.setMandante_luogo_nascita(rs.getString("mandante_luogo_nascita"));
+                documento.setMandante_data_nascita(rs.getString("mandante_data_nascita"));
+                
+                // FIRME
+                documento.setFirma_cliente(rs.getString("firma_cliente"));
+                documento.setFirma_mandante(rs.getString("firma_mandante"));
 
                 // COPERTURA
                 documento.setAbitazione_tipologia(rs.getString("abitazione_tipologia"));
@@ -150,6 +175,7 @@ public class GestioneDocumento {
                 documento.setCopertura_materiale(rs.getString("copertura_materiale"));
                 documento.setCopertura_materiale_altro(rs.getString("copertura_materiale_altro"));
                 documento.setCopertura_struttura(rs.getString("copertura_struttura"));
+                documento.setCopertura_struttura_altro(rs.getString("copertura_struttura_altro"));
 
                 // DETRAZIONE
                 documento.setDetrazione_intestatario(rs.getString("detrazione_intestatario"));
@@ -158,6 +184,7 @@ public class GestioneDocumento {
                 documento.setImmobile_num_unita(rs.getInt("immobile_num_unita"));
                 documento.setImmobile_anno_costruzione(rs.getString("immobile_anno_costruzione"));
                 documento.setImmobile_tipologia_edilizia(rs.getString("immobile_tipologia_edilizia"));
+                documento.setImmobile_tipologia_edilizia_altro(rs.getString("immobile_tipologia_edilizia_altro"));
                 documento.setImmobile_tipo_intervento(rs.getString("immobile_tipo_intervento"));
                 documento.setImmobile_unita_intervento(rs.getString("immobile_unita_intervento"));
 
@@ -183,8 +210,15 @@ public class GestioneDocumento {
                 documento.setOtp_data_ora_scadenza(rs.getString("otp_data_ora_scadenza"));
                 documento.setOtp_data_ora_verifica(rs.getString("otp_data_ora_verifica"));
                 documento.setOtp_ip(rs.getString("otp_ip"));
-                documento.setOtp_id_soggetto_verifica(rs.getString("otp_id_soggetto_verifica"));
-
+                documento.setOtp_tentativi_falliti(rs.getInt("otp_tentativi_falliti"));
+                
+                documento.setOtp_sms_mandante(rs.getString("otp_sms_mandante"));
+                documento.setOtp_hash_mandante(rs.getString("otp_hash_mandante"));
+                documento.setOtp_data_ora_generazione_mandante(rs.getString("otp_data_ora_generazione_mandante"));
+                documento.setOtp_data_ora_scadenza_mandante(rs.getString("otp_data_ora_scadenza_mandante"));
+                documento.setOtp_data_ora_verifica_mandante(rs.getString("otp_data_ora_verifica_mandante"));
+                documento.setOtp_ip_mandante(rs.getString("otp_ip_mandante"));
+                documento.setOtp_tentativi_falliti_mandante(rs.getInt("otp_tentativi_falliti_mandante"));
                 toReturn.add(documento);
             }
         }
@@ -259,7 +293,7 @@ public class GestioneDocumento {
                 riga.setId(rs.getInt("id"));
                 riga.setId_documento(rs.getInt("id_documento"));
 
-                riga.setDescrizione(rs.getString("descrizione"));
+                riga.setDescrizione(Utility.elimina_null(rs.getString("descrizione")));
 
                 riga.setImponibile(rs.getDouble("imponibile"));
                 riga.setIva(rs.getDouble("iva"));
@@ -283,8 +317,16 @@ public class GestioneDocumento {
         return toReturn;
     }
     
-    public ArrayList<Riga> get_righe_documento(int id_documento) {
+    public ArrayList<Riga> get_righe_documento(String id_documento) {
         return ricerca_righe("id_documento=" + id_documento,"id ASC",-1);
+    }
+    
+    public String aggiorna_totali_documento(String id_documento){
+        double imponibile=Utility.getIstanza().query_select_double("SELECT SUM(imponibile) AS imponibile FROM riga WHERE stato='1' AND id_documento='"+id_documento+"'", "imponibile");
+        double iva=Utility.getIstanza().query_select_double("SELECT SUM(iva) AS iva FROM riga WHERE stato='1' AND id_documento='"+id_documento+"'", "iva");
+        double totale=Utility.getIstanza().query_select_double("SELECT SUM(totale) AS totale FROM riga WHERE stato='1' AND id_documento='"+id_documento+"'", "totale");
+        Utility.getIstanza().query("UPDATE documento SET totale="+totale+",imponibile="+imponibile+",iva="+iva+" WHERE id="+Utility.is_null(id_documento));
+        return "";
     }
     
 }
