@@ -22,43 +22,67 @@
         <title><%=d.toString()%> | <%=Utility.nome_software%></title>
         <jsp:include page="../_importazioni.jsp"></jsp:include>
         <script>
-            function modifica_documento(inField){
-                if(inField.getAttribute("refresh")=="si" || inField.id=="stato"){
-                    mostra_loader("Operazione in corso...");
-                }
-                $.ajax({
-                    type: "POST",
-                    url: "<%=Utility.url%>/documenti/__modifica_documento.jsp",
-                    data: {
-                        id_documento: '<%=id_documento%>',
-                        campo_da_modificare: inField.id,
-                        new_valore: inField.value
-                    },
-                    dataType: "html",
-                    success: function(msg){
-                        if(inField.id === "stato" && inField.value === "-1"){
-                            window.location = "<%=Utility.url%>/documenti/index.jsp?tipo=<%=d.getTipo()%>";
-                        }
-                        if(inField.getAttribute("refresh")=="si"){
-                            aggiorna_documento_intestazione(inField);
-                        }
-                    },
-                    error: function(){
-                        alert("Errore durante il salvataggio modifica_documento");
-                    }
-                });
-            }
+            var aggiornamento_intestazione=false;
             
-            function aggiorna_documento_intestazione(inField){
-                var campi=$("#div_documento_intestazione").find("input:visible, select:visible, textarea:visible");
-                var indice=campi.index(inField);
-                var idSuccessivo=indice>=0 && indice+1<campi.length ? campi.eq(indice+1).attr("id") : "";
+            
+        function modifica_documento(inField){
+            if(aggiornamento_intestazione)
+                return;
 
-                $("#div_documento_intestazione").load("<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=id_documento%> #div_documento_intestazione > *",function(){
-                    nascondi_loader();
-                    if(idSuccessivo!="") $("#"+idSuccessivo).focus();
-                });
+            if(inField.getAttribute("refresh")=="si" || inField.id=="stato"){
+                mostra_loader("Operazione in corso...");
             }
+
+            $.ajax({
+                type: "POST",
+                url: "<%=Utility.url%>/documenti/__modifica_documento.jsp",
+                data: {
+                    id_documento: '<%=id_documento%>',
+                    campo_da_modificare: inField.id,
+                    new_valore: inField.value
+                },
+                dataType: "html",
+                success: function(msg){
+
+                    if(inField.id === "stato" && inField.value === "-1"){
+                        window.location = "<%=Utility.url%>/documenti/index.jsp?tipo=<%=d.getTipo()%>";
+                    }
+
+                    if(inField.getAttribute("refresh")=="si"){
+                        aggiorna_documento_intestazione(inField);
+                    }
+                },
+                error: function(){
+                    aggiornamento_intestazione=false;
+                    alert("Errore durante il salvataggio modifica_documento");
+                }
+            });
+        }
+            
+           function aggiorna_documento_intestazione(inField){
+            if(aggiornamento_intestazione)
+                return;
+
+            aggiornamento_intestazione=true;
+
+            var campi=$("#div_documento_intestazione").find("input:visible, select:visible, textarea:visible");
+            var indice=campi.index(inField);
+            var idSuccessivo=indice>=0 && indice+1<campi.length ? campi.eq(indice+1).attr("id") : "";
+            
+            $("#div_documento_intestazione").load(
+                "<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=id_documento%> #div_documento_intestazione > *",
+                function(){
+                    nascondi_loader();
+
+                    if(idSuccessivo!="")
+                        $("#"+idSuccessivo).focus();
+
+                    setTimeout(function(){
+                        aggiornamento_intestazione=false;
+                    },300);
+                }
+            );
+        }
             
             function modifica_riga(inField,id_riga){
                 if(inField.getAttribute("refresh")=="si" || inField.id=="stato"){

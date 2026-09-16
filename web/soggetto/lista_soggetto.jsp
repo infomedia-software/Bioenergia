@@ -241,7 +241,7 @@
                                     </td>
 
                                     <td>
-                                        <label>Telefono</label>
+                                        <label>Cellulare</label>
                                         <input type="text" name="telefono" value="<%=telefono%>">
                                     </td>
 
@@ -283,7 +283,7 @@
                             <th>Privato / Azienda</th>
                             <th>Cognome Nome / Ragione Sociale</th>
                             <th>Comune</th>
-                            <th>Telefono</th>
+                            <th>Cellulare</th>
                             <th>Email</th>
                             <th></th>
                         </tr>
@@ -301,7 +301,7 @@
                                 </td>
                                 <td><%=Utility.elimina_null(soggetto.toString())%></td>
                                 <td><%=Utility.elimina_null(soggetto.getComune())%></td>
-                                <td><%=Utility.elimina_null(soggetto.getTelefono())%></td>
+                                <td><%=Utility.elimina_null(soggetto.getCellulare())%></td>
                                 <td><%=Utility.elimina_null(soggetto.getEmail())%></td>
 
                                 <td>
