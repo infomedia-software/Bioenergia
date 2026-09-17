@@ -46,7 +46,7 @@
         </div>
         <div class="menu_utente_testo">
             <span class="menu_utente_nome"><%=nome_utente%></span>
-            <span class="menu_utente_ruolo"><%=utente.is_amministratore() ? "Amministratore" : "Dipendente"%></span>
+            <span class="menu_utente_ruolo"><%=utente.getRuolo()%></span>
         </div>
         <a href="<%=Utility.url%>/utente/__logout.jsp" class="menu_utente_logout" title="Logout">
             <i class="fa-solid fa-right-from-bracket"></i>
@@ -59,6 +59,7 @@
         <i class="fa-solid fa-file-invoice"></i>
         <span>Contratti</span>
     </a>
+    <% if(utente.is_amministratore()){%>
     <div class="menu-gruppo <%=menu_anagrafiche ? "aperto" : ""%>">
         <a href="javascript:void(0);" class="menu-voce" onclick="$(this).closest('.menu-gruppo').toggleClass('aperto');">
             <i class="fa-solid fa-address-book"></i>
@@ -79,6 +80,6 @@
             <%}%>
         </div>
     </div>
-    
+    <%}%>
   
 </div>

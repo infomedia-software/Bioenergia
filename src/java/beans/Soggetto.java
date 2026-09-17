@@ -63,12 +63,12 @@ public class Soggetto {
     public boolean is_amministratore(){
         return ruolo.equals("AMMINISTRATORE");
     }
-    public boolean is_dipendente(){
-        return ruolo.equals("DIPENDENTE");
+    public boolean is_consulente(){
+        return ruolo.equals("CONSULENTE");
     }
     
-    public boolean is_tecnico(){
-        return ruolo.equals("TECNICO");
+    public boolean is_gestore(){
+        return ruolo.equals("GESTORE");
     }
     
     

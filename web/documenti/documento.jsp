@@ -363,6 +363,7 @@
         });
         
         </script>
+        
     </head>
     <body>
         
@@ -408,7 +409,7 @@
                         <td>Consulente</td>
                         <td>
                             <label>
-                                <select id="id_autore" onchange="modifica_documento(this);">
+                                <select id="id_autore" <% if(!utente.is_amministratore()){%>disabled="true" style="pointer-events: none;"<%}%> onchange="modifica_documento(this);">
                                 <% for(Soggetto ut:GestioneSoggetto.getIstanza().ricerca_soggetto(" tipologia='UTENTE' ", " cognome ASC ", -1)){%>
                                     <option value="<%=ut.getId()%>" <%=Utility.selected_se_uguali(ut.getId(), d.getId_autore()+"")%>><%=ut.toString()%></option>
                                 <%}%>
@@ -416,7 +417,7 @@
                             </label>
                         </td>
                         
-                        <td>Tecnico</td>
+                        <!--td>Tecnico</td>
                         <td>
                             <label>
                                 <select id="id_tecnico" onchange="modifica_documento(this);">
@@ -426,9 +427,9 @@
                                     <%}%>
                                 </select>
                             </label>
-                        </td>
+                        </td-->
                         <td>Stato</td>
-                        <td>
+                        <td colspan="2">
                             <label>
                                 <select id="id_situazione" onchange="modifica_documento(this);">                                    
                                     <% for(Item sit:GestioneItems.getIstanza().ricerca("documento", "id_situazione")){%>
@@ -775,7 +776,7 @@
                                     <input type="number" style="width:50px;" value="<%=Utility.elimina_zero(p.getPercentuale())%>" refresh="si" id="percentuale_pagamento_finanziamento_<%=p.getId()%>" onchange="modifica_pagamento(this)" id_pagamento="<%=p.getId()%>" campo="percentuale">&nbsp;%
                                 </td>
                                 <td style="width:70%;">
-                                    <input type="text" value="<%=p.getDescrizione()%>" class="no_controllo" campo="descrizione" id="descrizione_pagamento_finanziamento_<%=p.getId()%>" onchange="modifica_pagamento(this)" id_pagamento="<%=p.getId()%>">
+                                    <input type="text" placeholder="Info sul pagamento... " value="<%=p.getDescrizione()%>" class="no_controllo" campo="descrizione" id="descrizione_pagamento_finanziamento_<%=p.getId()%>" onchange="modifica_pagamento(this)" id_pagamento="<%=p.getId()%>">
                                 </td>
                                 <td style="width:10%;text-align:right;">
                                     <%=Utility.formatta_prezzo(p.getImporto())%>
@@ -1147,7 +1148,7 @@
                 </div>
                             
                 <!-- MODELLO INFORMATIVO IMPIANTO -->
-                <div class="box">
+                <div class="box" style="display: none;">
                     <h2>Modello informativo impianto</h2>
                     <table style="width:100%;">
                         <tr>

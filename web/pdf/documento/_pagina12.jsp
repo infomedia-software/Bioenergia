@@ -376,11 +376,11 @@ p.setSpacingAfter(5);
 tecnico_cell.addElement(p);
 
 if(d.getTecnico()!=null){
-    String firma_tecnico=Utility.elimina_null(d.getTecnico().getFirma());
-
+    //String firma_tecnico=Utility.elimina_null(d.getTecnico().getFirma());
+    String firma_tecnico="firma_tecnico.PNG";
     if(!firma_tecnico.equals("")){
         try{
-            Image img_firma_tecnico=Image.getInstance(application.getRealPath("/allegati/"+firma_tecnico));
+            Image img_firma_tecnico=Image.getInstance(application.getRealPath("/img/"+firma_tecnico));
             img_firma_tecnico.scaleToFit(160,70);
             img_firma_tecnico.setAlignment(Image.ALIGN_CENTER);
             tecnico_cell.addElement(img_firma_tecnico);

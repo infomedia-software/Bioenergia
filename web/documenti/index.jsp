@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <%
     Soggetto utente=(Soggetto)session.getAttribute("utente");
-    boolean amministratore=utente!=null && utente.is_amministratore();
+    boolean amministratore=utente!=null && (utente.is_amministratore() || utente.is_gestore());
     String tipo=Utility.elimina_null(request.getParameter("tipo")).trim();
     String cerca=Utility.elimina_null(request.getParameter("cerca")).trim();
     String id_soggetto=Utility.elimina_null(request.getParameter("id_soggetto")).trim();
@@ -157,11 +157,12 @@
                                 <i class="fa-solid fa-rotate-left"></i>
                                 Azzera
                             </button>
-
+                            <% if(!utente.is_gestore()){%>
                             <button type="button" class="verde" onclick="aggiungi_documento()">
                                 <i class="fa-solid fa-plus"></i>
                                 Contratto
                             </button>
+                            <%}%>
 
                         </div>
                             
@@ -316,10 +317,15 @@
                                     <% } %>
                                 </td>
                                 <td style="text-align:center;">
-                                    <a class="pulsante_small" href="documento.jsp?id_documento=<%=documento.getId()%>">
-                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                        
-                                    </a>
+                                    <% if(!utente.is_gestore()){%>
+                                        <a class="pulsante_small" href="documento.jsp?id_documento=<%=documento.getId()%>">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                        </a>
+                                    <%}else{%>
+                                        <a class="pulsante_small" href="<%=Utility.url%>/pdf/documento/pdf_documento.jsp?id_documento=<%=documento.getId()%>" target="_blank">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                        </a>
+                                    <%}%>
                                 </td>
 
                             </tr>

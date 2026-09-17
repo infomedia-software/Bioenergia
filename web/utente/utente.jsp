@@ -139,8 +139,8 @@
                             <div class="valore">
                                 <select campo_da_modificare="ruolo" id_utente="<%=id_utente%>" onchange="modifica_utente(this)">
                                     <option value="AMMINISTRATORE" <%=Utility.selected_se_uguali(utente.getRuolo(),"AMMINISTRATORE")%>>Amministratore</option>
-                                    <option value="DIPENDENTE" <%=Utility.selected_se_uguali(utente.getRuolo(),"DIPENDENTE")%>>Dipendente</option>
-                                    <option value="TECNICO" <%=Utility.selected_se_uguali(utente.getRuolo(),"DIPENDENTE")%>>Tecnico</option>
+                                    <option value="CONSULENTE" <%=Utility.selected_se_uguali(utente.getRuolo(),"CONSULENTE")%>>Consulente</option>
+                                    <option value="GESTORE" <%=Utility.selected_se_uguali(utente.getRuolo(),"GESTORE")%>>Gestore</option>
                                 </select>
                             </div>
                                 
