@@ -599,10 +599,14 @@
                                     <label>Codice Fiscale</label><br>
                                     <input type="text" id="mandante_cf" refresh="si" value="<%=d.getMandante_cf()%>" onchange="modifica_documento(this);">
                                 </td>
+                                <td>
+                                    <label>Cellulare</label><br>
+                                    <input type="text" id="mandante_cellulare" refresh="si" value="<%=d.getMandante_cellulare()%>" onchange="modifica_documento(this);">
+                                </td>
                             </tr>
                             <% if(!d.isMandante_cliente()){%>
                             <tr>
-                                <td>
+                                <td colspan="2">
                                     <label>In qualità di</label><br>
                                     <select id="mandante_qualifica" onchange="modifica_documento(this)">
                                         <option></option>
@@ -1115,7 +1119,7 @@
                             <td><b>Unità oggetto di intervento</b></td>
                             <td></td>
                             <td>
-                                <input type="number" id="immobile_unita_intervento" name="immobile_unita_intervento" value="<%=d.getImmobile_unita_intervento()%>" onchange="modifica_documento(this)">
+                                <input type="text" id="immobile_unita_intervento" name="immobile_unita_intervento" value="<%=d.getImmobile_unita_intervento()%>" onchange="modifica_documento(this)">
                             </td>
                         </tr>
                     </table>

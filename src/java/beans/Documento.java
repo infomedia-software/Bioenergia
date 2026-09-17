@@ -64,6 +64,7 @@ public class Documento {
     private String mandante_provincia = "";
     private String mandante_luogo_nascita = "";
     private String mandante_data_nascita = "";
+    private String mandante_cellulare = "";
     private String mandante_qualifica = "";
 
     // MODULO STRATIFICAZIONE MANTO DI COPERTURA
@@ -967,6 +968,19 @@ public class Documento {
         else
             return mandante_data_nascita;
     }
+
+    public String getMandante_cellulare() {
+        if(mandante_cellulare==null || mandante_cellulare.equals(""))
+            return cliente_cellulare;
+        else
+            return mandante_cellulare;
+    }
+
+    public void setMandante_cellulare(String mandante_cellulare) {
+        this.mandante_cellulare = mandante_cellulare;
+    }
+    
+    
 
     public void setMandante_data_nascita(String mandante_data_nascita) {
         this.mandante_data_nascita = mandante_data_nascita;

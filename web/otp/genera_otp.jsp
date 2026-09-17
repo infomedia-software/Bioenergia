@@ -11,6 +11,8 @@
     String mandante=Utility.elimina_null(request.getParameter("mandante")); 
     Documento documento=GestioneDocumento.getIstanza().get_documento(id_documento);
     String tel=documento.getCliente_cellulare();
+    if(mandante.equals("si"))
+        tel=documento.getMandante_cellulare();
 %>  
      
 <html>

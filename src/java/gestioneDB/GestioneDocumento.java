@@ -158,6 +158,7 @@ public class GestioneDocumento {
                 documento.setMandante_qualifica(rs.getString("mandante_qualifica"));
                 documento.setMandante_luogo_nascita(rs.getString("mandante_luogo_nascita"));
                 documento.setMandante_data_nascita(rs.getString("mandante_data_nascita"));
+                documento.setMandante_cellulare(rs.getString("mandante_cellulare"));
                 
                 // FIRME
                 documento.setFirma_cliente(rs.getString("firma_cliente"));
