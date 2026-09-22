@@ -182,6 +182,8 @@ firma_titolo.setAlignment(Element.ALIGN_CENTER);
 firma_cell.addElement(firma_titolo);
 
 String firma_cliente=Utility.elimina_null(d.getFirma_cliente());
+if(!d.isMandante_cliente())
+    firma_cliente=Utility.elimina_null(d.getFirma_mandante());
 
 if(!firma_cliente.equals("")){
     if(firma_cliente.contains(","))

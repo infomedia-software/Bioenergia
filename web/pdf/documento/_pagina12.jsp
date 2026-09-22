@@ -345,6 +345,8 @@ firma_cliente_cell.addElement(p);
 
 /* FIRMA CLIENTE BASE64 */
 String firma_cliente=Utility.elimina_null(d.getFirma_cliente());
+if(!d.isMandante_cliente())
+    firma_cliente=Utility.elimina_null(d.getFirma_mandante());
 
 if(!firma_cliente.equals("")){
     if(firma_cliente.contains(","))
