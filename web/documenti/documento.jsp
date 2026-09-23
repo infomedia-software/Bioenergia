@@ -666,7 +666,22 @@
                 </div>
                 <div class="clear"></div>
                 
-                
+                <!-- ALLEGATI -->
+                <div class="box">
+                <h2>Allegati</h2>
+                    <%String queryallegati=" allegati.rif='DOCUMENTO' AND allegati.idrif="+Utility.is_null(id_documento)+" AND allegati.stato='1' ORDER BY allegati.id DESC";%>
+                    <jsp:include page="../_allegati.jsp">
+                        <jsp:param name="query" value="<%=queryallegati%>"></jsp:param>
+                        <jsp:param name="id_rif" value="<%=id_documento%>"></jsp:param>
+                        <jsp:param name="rif" value="DOCUMENTO"></jsp:param>
+                    </jsp:include>
+
+                    <div class="height-10"></div>
+                    <jsp:include page="../_nuovo_allegato.jsp">
+                        <jsp:param name="idrif" value="<%=id_documento%>"></jsp:param>
+                        <jsp:param name="rif" value="DOCUMENTO"></jsp:param>
+                    </jsp:include>
+                </div>
                         
                 <!-- RIGHE -->
                 <div id="div_righe">
