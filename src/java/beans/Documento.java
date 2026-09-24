@@ -25,6 +25,7 @@ public class Documento {
     private String osservazioni = "";
     private String servizi_inclusi = "";
     private String modalita_pagamento = "";
+    private String iban = "";
     private String note1 = "";
     private String note2 = "";
     private String note3 = "";
@@ -1001,6 +1002,16 @@ public class Documento {
     public void setOtp_tentativi_falliti(int otp_tentativi_falliti) {
         this.otp_tentativi_falliti = otp_tentativi_falliti;
     }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
+    
+    
     
     public boolean is_otp_verificato(){
         if(otp_data_ora_verifica!=null)

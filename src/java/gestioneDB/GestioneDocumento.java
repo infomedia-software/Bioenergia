@@ -126,8 +126,9 @@ public class GestioneDocumento {
                 documento.setIva(rs.getDouble("iva"));
                 documento.setTotale(rs.getDouble("totale"));
                 documento.setGse_prezzi(rs.getString("gse_prezzi"));
-
+                
                 documento.setPagamento(rs.getString("pagamento"));
+                documento.setIban(rs.getString("iban"));
                 documento.setStato(rs.getString("stato"));
 
                 // CLIENTE

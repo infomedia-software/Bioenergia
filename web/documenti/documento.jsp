@@ -662,7 +662,22 @@
                                </div>
                            <%}%>
                         </div>
-                        <div class="clear"></div>
+                        <div class="height-10"></div>
+                        
+                        <div class="col_100">
+                            <table>
+                                <tr>
+                                    <td style="vertical-align: top;">
+                                        <label>IBAN</label><br>
+                                        <input type="text" value="<%=d.getIban()%>" id="iban" onchange="modifica_documento(this)">
+                                    </td>
+                                    <td>
+                                        <label>Note Interne</label><br>
+                                        <textarea id="note1" onchange="modifica_documento(this)" class="no_controllo"><%=Utility.elimina_null(Utility.standardizza_testo_textarea(d.getNote1()))%></textarea>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
                 </div>
                 <div class="clear"></div>
                 
