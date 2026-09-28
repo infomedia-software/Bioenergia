@@ -64,9 +64,8 @@ public class GestioneSoggetto {
             if (offset >= 0) {
                 query += " LIMIT " + offset+","+Utility.righe_pagina;
             }
-
+            System.out.println("query.-->"+query);
             conn = DBConnection.getConnection();
-
             stmt = conn.prepareStatement(query);
             rs = stmt.executeQuery();
             while (rs.next()) {
@@ -136,7 +135,7 @@ public class GestioneSoggetto {
             }
 
           } catch (ConnectionPoolException | SQLException ex) {
-            GestioneErrori.errore("GestioneMacchinaListino", "ricerca_macchina_listino", ex);
+            GestioneErrori.errore("GestioneMacchinaListino", "ricerca_soggetto", ex);
             } finally {
                 DBUtility.closeQuietly(rs);
                 DBUtility.closeQuietly(stmt);

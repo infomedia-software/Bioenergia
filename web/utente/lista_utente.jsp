@@ -52,7 +52,7 @@
                     data:{tipologia:"UTENTE"},
                     success:function(id_soggetto){
                         id_soggetto=$.trim(id_soggetto);
-                        window.location="<%=Utility.url%>/utente/utente.jsp?id_soggetto="+id_soggetto;
+                        location.href="<%=Utility.url%>/utente/utente.jsp?id_utente="+id_soggetto;
                     },
                     error:function(){
                         nascondi_loader();

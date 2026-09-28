@@ -16,7 +16,7 @@
     
     String ruolo="";
     if(tipologia.equals("UTENTE")){
-        ruolo="DIPENDENTE";
+        ruolo="CONSULENTE";
     }
 
     String ultimo = Utility.getIstanza().query_select(
@@ -44,6 +44,6 @@
         "'1'" +
         ")"
     );
-
+    System.out.println("id sogg-->"+id_soggetto);
     out.print(id_soggetto);
 %>
