@@ -322,7 +322,7 @@
                                             <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                         </a>
                                     <%}else{%>
-                                        <a class="pulsante_small" href="<%=Utility.url%>/pdf/documento/pdf_documento.jsp?id_documento=<%=documento.getId()%>" target="_blank">
+                                        <a class="pulsante_small" href="documento_light.jsp?id_documento=<%=documento.getId()%>">
                                             <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                         </a>
                                     <%}%>
