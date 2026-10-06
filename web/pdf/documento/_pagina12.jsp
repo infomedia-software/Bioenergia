@@ -343,10 +343,19 @@ p.setSpacingAfter(5);
 firma_cliente_cell.addElement(p);
 
 
-/* FIRMA CLIENTE BASE64 */
+/* FIRMA CLIENTE / MANDANTE BASE64 */
 String firma_cliente=Utility.elimina_null(d.getFirma_cliente());
-if(!d.isMandante_cliente())
+String data_ora_verifica_otp="";
+
+if(d.isMandante_cliente()){
+    if(d.getOtp_data_ora_verifica()!=null)
+        data_ora_verifica_otp=Utility.converti_datetime_formato_it(d.getOtp_data_ora_verifica());
+}else{
     firma_cliente=Utility.elimina_null(d.getFirma_mandante());
+
+    if(d.getOtp_data_ora_verifica_mandante()!=null)
+        data_ora_verifica_otp=Utility.converti_datetime_formato_it(d.getOtp_data_ora_verifica_mandante());
+}
 
 if(!firma_cliente.equals("")){
     if(firma_cliente.contains(","))
@@ -360,13 +369,20 @@ if(!firma_cliente.equals("")){
         img_firma.setAlignment(Image.ALIGN_CENTER);
 
         firma_cliente_cell.addElement(img_firma);
+
+        if(!data_ora_verifica_otp.equals("")){
+            Paragraph data_firma=new Paragraph("Firma verificata tramite OTP il "+data_ora_verifica_otp,font_normale_p12);
+            data_firma.setAlignment(Element.ALIGN_CENTER);
+            data_firma.setSpacingBefore(1);
+            firma_cliente_cell.addElement(data_firma);
+        }
+
     }catch(Exception e){
         System.out.println("Errore firma cliente pagina 12: "+e.getMessage());
     }
 }
 
 firme.addCell(firma_cliente_cell);
-
 
 /* TECNICO */
 PdfPCell tecnico_cell=new PdfPCell();

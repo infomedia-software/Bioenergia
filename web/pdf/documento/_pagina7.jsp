@@ -39,7 +39,6 @@ tabella_firme.addCell(cella_data);
 
 PdfPCell cella_firme=new PdfPCell();
 cella_firme.setBorder(Rectangle.NO_BORDER);
-
 /* FIRMA MANDANTE */
 Paragraph firma_mandante_titolo=new Paragraph("Firma del Mandante",font_normale_p7);
 firma_mandante_titolo.setAlignment(Element.ALIGN_CENTER);
@@ -54,10 +53,22 @@ if(!firma_mandante.equals("")){
 
     try{
         byte[] firma_bytes=Base64.getDecoder().decode(firma_mandante);
+
         Image img_firma_mandante=Image.getInstance(firma_bytes);
-        img_firma_mandante.scaleToFit(150,65);
+        img_firma_mandante.scaleToFit(150,55);
         img_firma_mandante.setAlignment(Image.ALIGN_CENTER);
         cella_firme.addElement(img_firma_mandante);
+
+        String data_otp_mandante=Utility.elimina_null(Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica_mandante()));
+        
+        if(!data_otp_mandante.equals("")){
+            Paragraph data_firma_mandante=new Paragraph("Firma verificata tramite OTP il "+data_otp_mandante,font_piccolo_p7);
+            data_firma_mandante.setAlignment(Element.ALIGN_CENTER);
+            data_firma_mandante.setSpacingBefore(2);
+            data_firma_mandante.setSpacingAfter(0);
+            cella_firme.addElement(data_firma_mandante);
+        }
+
     }catch(Exception e){
         System.out.println("Errore firma mandante: "+e.getMessage());
     }

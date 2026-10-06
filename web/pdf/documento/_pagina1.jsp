@@ -462,7 +462,6 @@
     cliente_firma.setMinimumHeight(42);
 
     cliente_firma.addElement(new Paragraph("Il Cliente",font_normale));
-
     String firma_cliente=Utility.elimina_null(documento.getFirma_cliente());
 
     if(!firma_cliente.equals("")){
@@ -478,6 +477,15 @@
             imgFirma.setSpacingBefore(2);
 
             cliente_firma.addElement(imgFirma);
+
+            /*
+             * Data e ora verifica OTP
+             */
+            if(documento.getOtp_data_ora_verifica()!=null){
+                Paragraph data_firma=new Paragraph("Firmato con OTP il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo);
+                data_firma.setSpacingBefore(1);
+                cliente_firma.addElement(data_firma);
+            }
 
         }catch(Exception ex){
             // firma non valida: lascio vuoto
@@ -662,13 +670,25 @@
             String firma=Utility.elimina_null(documento.getFirma_cliente());
             if(firma.contains(","))
                 firma=firma.substring(firma.indexOf(",")+1);
+
             byte[] bytes=java.util.Base64.getDecoder().decode(firma);
             Image img=Image.getInstance(bytes);
             img.scaleToFit(85,17);
             img.setAlignment(Image.ALIGN_LEFT);
             firma_inf.addElement(img);
+
+            /*
+             * Data e ora verifica OTP
+             */
+            if(documento.getOtp_data_ora_verifica()!=null){
+                Paragraph data_firma=new Paragraph("Firmato con OTP il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo);
+                data_firma.setSpacingBefore(1);
+                firma_inf.addElement(data_firma);
+            }
         }
+
         firme_informative.addCell(firma_inf);
     }
+
     pdf.add(firme_informative);
 %>

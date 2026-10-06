@@ -864,7 +864,10 @@ public class Documento {
     }
 
     public String getOtp_data_ora_verifica_mandante() {
-        return otp_data_ora_verifica_mandante;
+        if(otp_data_ora_verifica_mandante==null)
+            return otp_data_ora_verifica;
+        else
+            return otp_data_ora_verifica_mandante;
     }
 
     public void setOtp_data_ora_verifica_mandante(String otp_data_ora_verifica_mandante) {
