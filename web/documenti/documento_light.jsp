@@ -41,6 +41,16 @@
                 <div class="col_100">
                     <table>
                         <tr>
+                            <td colspan="2">
+                                <label>Stato</label><br>
+                                <select id="id_situazione" onchange="modifica_documento(this);">                                    
+                                <% for(Item sit:GestioneItems.getIstanza().ricerca("documento", "id_situazione")){%>
+                                    <option value="<%=sit.getId()%>" <%=Utility.selected_se_uguali(sit.getId(), d.getId_situazione()+"")%>><%=sit.getValore()%></option>
+                                <%}%>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
                             <td style="vertical-align: top;">
                                 <label>IBAN</label><br>
                                 <input type="text" value="<%=d.getIban()%>" id="iban" onchange="modifica_documento(this)">
