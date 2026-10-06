@@ -21,7 +21,38 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title><%=d.toString()%> | <%=Utility.nome_software%></title>
         <jsp:include page="../_importazioni.jsp"></jsp:include>
-        
+        <script>
+        function modifica_documento(inField){
+            
+            if(inField.getAttribute("refresh")=="si" || inField.id=="stato"){
+                mostra_loader("Operazione in corso...");
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "<%=Utility.url%>/documenti/__modifica_documento.jsp",
+                data: {
+                    id_documento: '<%=id_documento%>',
+                    campo_da_modificare: inField.id,
+                    new_valore: inField.value
+                },
+                dataType: "html",
+                success: function(msg){
+
+                    if(inField.id === "stato" && inField.value === "-1"){
+                        window.location = "<%=Utility.url%>/documenti/index.jsp?tipo=<%=d.getTipo()%>";
+                    }
+
+                    if(inField.getAttribute("refresh")=="si"){
+                        aggiorna_documento_intestazione(inField);
+                    }
+                },
+                error: function(){                    
+                    alert("Errore durante il salvataggio modifica_documento");
+                }
+            });
+        }
+        </script>
     </head>
     <body>
         
