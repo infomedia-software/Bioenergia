@@ -550,7 +550,17 @@
                         <h2>
                             Dati Mandante
                         </h2>
-                        
+                        <table>
+                            <tr>
+                                <td>
+                                    <select id="mandante_diverso" class="no_controllo" refresh="si" onchange="modifica_documento(this);">
+                                        <option value="" <% if(d.isMandante_cliente()){%>selected="true"<%}%>>Il cliente coincide con il mandante</option>
+                                        <option value="si" <% if(!d.isMandante_cliente()){%>selected="true"<%}%>>Il cliente NON coincide con il mandante</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        <% if(!d.isMandante_cliente()){%>
                         <table>
                             <tr>
                                 <td>
@@ -605,7 +615,7 @@
                                     <input type="text" id="mandante_cellulare" refresh="si" value="<%=d.getMandante_cellulare()%>" onchange="modifica_documento(this);">
                                 </td>
                             </tr>
-                            <% if(!d.isMandante_cliente()){%>
+                            
                             <tr>
                                 <td colspan="2">
                                     <label>In qualità di</label><br>
@@ -616,8 +626,8 @@
                                     </select>
                                 </td>
                             </tr>
-                            <%}%>
                         </table>
+                        <%}%>
                     </div>
                     <div class="height-10"></div>
                 

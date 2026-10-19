@@ -59,7 +59,7 @@
         <div id="container">
             <jsp:include page="../_menu.jsp"></jsp:include>
             <div id="content">
-            <h1><%=d.toString()%></h1>
+            <h1><%=d.toString()%> - Cliente: <%=d.getCliente_cognome()%> <%=d.getCliente_nome()%></h1>
             <div class="box">
                 <a class="pulsante" href="<%=Utility.url%>/documenti/index.jsp?tipo=<%=d.getTipo()%>">
                     <i class="fa-solid fa-arrow-left"></i>Torna alla Lista

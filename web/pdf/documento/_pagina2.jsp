@@ -115,8 +115,8 @@
         "Piano operativo di sicurezza",
         "Installazione dell’impianto completo (installazione standard)",
         "Dichiarazione di conformità impianto",
-        "Rilascio della documentazione necessaria per l’ottenimento della detrazione fiscale, ove spettante",
-        "Assistenza nella gestione della pratica di Scambio sul Posto o ritiro dedicato"
+        "Rilascio della documentazione necessaria per l’ottenimento della detrazione fiscale, ove spettante (inclusa pratica Enea)",
+        "Assistenza nella gestione della pratica con ritiro dedicato"
     };
 
     PdfPTable tabella_servizi=new PdfPTable(1);

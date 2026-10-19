@@ -50,6 +50,35 @@
         }
     }
     
+    if(campo_da_modificare.equals("mandante_diverso")){
+        if(new_valore.equals("")){      // li svuoto perchè mandante è il cliente
+            Utility.getIstanza().query(
+                 "UPDATE documento SET "+
+                    "mandante_nome='',"+
+                    "mandante_cognome='',"+
+                    "mandante_data_nascita=null,"+
+                    "mandante_luogo_nascita='',"+
+                    "mandante_cellulare='',"+
+                    "mandante_indirizzo='',"+
+                    "mandante_comune='',"+
+                    "mandante_cf='',"+
+                    "mandante_provincia='' "+
+                "WHERE id="+Utility.is_null(id_documento)
+             );
+        }else{
+            Documento d=GestioneDocumento.getIstanza().get_documento(id_documento);
+            Utility.getIstanza().query(
+                 "UPDATE documento SET "+
+                 "mandante_indirizzo="+Utility.is_null(d.getCliente_indirizzo())+","+
+                 "mandante_comune="+Utility.is_null(d.getCliente_comune())+","+
+                 "mandante_provincia="+Utility.is_null(d.getCliente_provincia())+" "+
+                 "WHERE id="+Utility.is_null(id_documento)
+             );
+        }
+     }
+    
+    
+    
     if(campo_da_modificare.equals("id_soggetto")){
         Soggetto cliente=GestioneSoggetto.getIstanza().get_soggetto(new_valore);
 

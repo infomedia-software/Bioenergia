@@ -362,7 +362,7 @@
     if(documento.getPagamento().contains("pagamento")){
         pagamenti.add("X "+documento.getModalita_pagamento().toUpperCase()+" intestato a \"Bioenergia S.r.l.\"\n");
     for(Pagamento p:GestionePagamento.getIstanza().ricerca_pagamento(" percentuale>0 AND finanziamento='' AND id_documento="+id_documento, "", -1)){
-        pagamenti.add("\u00A0\u00A0\u00A0\u00A0- "+Utility.elimina_zero(p.getPercentuale())+"% "+p.getDescrizione()+"\n");
+        pagamenti.add("\u00A0\u00A0\u00A0\u00A0- € "+Utility.formatta_prezzo_no_valuta(p.getImporto())+" "+p.getDescrizione()+"\n");
         }
     }else{
         //pagamenti.add("◦ "+documento.getModalita_pagamento().toUpperCase()+" intestato a \"Bioenergia S.r.l.\"\n");
@@ -371,7 +371,7 @@
     if(documento.getPagamento().contains("finanziamento")){
         pagamenti.add("X Erogazione in favore di “Bioenergia S.r.l.” del finanziamento sottoscritto dal cliente.\n");
         for(Pagamento p:GestionePagamento.getIstanza().ricerca_pagamento(" percentuale>0 AND finanziamento='si' AND id_documento="+id_documento, "", -1)){
-            pagamenti.add("\u00A0\u00A0\u00A0\u00A0- "+Utility.elimina_zero(p.getPercentuale())+"% "+p.getDescrizione()+"\n");
+            pagamenti.add("\u00A0\u00A0\u00A0\u00A0- € "+Utility.formatta_prezzo_no_valuta(p.getImporto())+" "+p.getDescrizione()+"\n");
         }
     }else{
         pagamenti.add("Nessuna Erogazione in favore di “Bioenergia S.r.l.” del finanziamento sottoscritto dal cliente.\n");
@@ -478,20 +478,19 @@
 
             cliente_firma.addElement(imgFirma);
 
-            /*
-             * Data e ora verifica OTP
-             */
-            if(documento.getOtp_data_ora_verifica()!=null){
-                Paragraph data_firma=new Paragraph("Firmato con OTP il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo);
-                data_firma.setSpacingBefore(1);
-                cliente_firma.addElement(data_firma);
-            }
-
         }catch(Exception ex){
             // firma non valida: lascio vuoto
         }
     }
 
+    /*
+    * Data e ora verifica OTP
+    */
+   if(documento.getOtp_data_ora_verifica()!=null){
+       Paragraph data_firma=new Paragraph("Firmato con OTP da "+documento.getCliente_cognome()+" "+documento.getCliente_cognome()+" il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo);
+       data_firma.setSpacingBefore(1);
+       cliente_firma.addElement(data_firma);
+   }
 
     /*
     * CONSULENTE
@@ -676,17 +675,15 @@
             img.scaleToFit(85,17);
             img.setAlignment(Image.ALIGN_LEFT);
             firma_inf.addElement(img);
-
-            /*
-             * Data e ora verifica OTP
-             */
-            if(documento.getOtp_data_ora_verifica()!=null){
-                Paragraph data_firma=new Paragraph("Firmato con OTP il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo);
-                data_firma.setSpacingBefore(1);
-                firma_inf.addElement(data_firma);
-            }
         }
-
+          /*
+            * Data e ora verifica OTP
+            */
+        if(documento.getOtp_data_ora_verifica()!=null){
+            Paragraph data_firma=new Paragraph("Firma OTP: "+documento.getCliente_cognome()+" "+documento.getCliente_nome()+" - "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo);
+            data_firma.setSpacingBefore(1);
+            firma_inf.addElement(data_firma);
+        }
         firme_informative.addCell(firma_inf);
     }
 

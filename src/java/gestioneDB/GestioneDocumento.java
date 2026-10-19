@@ -148,7 +148,7 @@ public class GestioneDocumento {
                 documento.setCliente_email(rs.getString("cliente_email"));
                 documento.setCliente_luogo_nascita(rs.getString("cliente_luogo_nascita"));
                 documento.setCliente_data_nascita(rs.getString("cliente_data_nascita"));
-                
+                documento.setMandante_diverso(rs.getString("mandante_diverso"));
                 // MANDANTE
                 documento.setMandante_nome(rs.getString("mandante_nome"));
                 documento.setMandante_cognome(rs.getString("mandante_cognome"));

@@ -303,6 +303,13 @@ public class Utility {
         return "&euro; "+nf.format(prezzo);
     }
     
+    public static String formatta_prezzo_no_valuta(double prezzo) {
+        NumberFormat nf = NumberFormat.getNumberInstance(Locale.ITALY);
+        nf.setMinimumFractionDigits(2);
+        nf.setMaximumFractionDigits(2);
+        return nf.format(prezzo);
+    }
+    
  
     public static String converti_datetime_formato_it(String datetime) {
         if (datetime == null || datetime.isEmpty()) {

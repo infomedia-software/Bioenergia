@@ -56,6 +56,8 @@ public class Documento {
     private String cliente_luogo_nascita = "";
     private String cliente_data_nascita = "";
     
+    private String mandante_diverso = "";
+    
     // DATI MANDANTE
     private String mandante_nome = "";
     private String mandante_cognome = "";
@@ -452,7 +454,7 @@ public class Documento {
     }
 
     public String getMandante_nome() {
-        if(mandante_nome.equals(""))
+        if(isMandante_cliente())
             return cliente_nome;
         else
             return mandante_nome;
@@ -463,7 +465,7 @@ public class Documento {
     }
 
     public String getMandante_cognome() {
-        if(mandante_cognome.equals(""))
+        if(isMandante_cliente())
             return cliente_cognome;
         else
             return mandante_cognome;
@@ -474,7 +476,7 @@ public class Documento {
     }
 
     public String getMandante_cf() {
-        if(mandante_cf.equals(""))
+        if(isMandante_cliente())
             return cliente_cf;
         else
             return mandante_cf;
@@ -485,7 +487,7 @@ public class Documento {
     }
 
     public String getMandante_indirizzo() {
-        if(mandante_indirizzo.equals(""))
+        if(isMandante_cliente())
             return cliente_indirizzo;
         else
             return mandante_indirizzo;
@@ -496,7 +498,7 @@ public class Documento {
     }
 
     public String getMandante_comune() {
-        if(mandante_comune.equals(""))
+        if(isMandante_cliente())
             return cliente_comune;
         else
             return mandante_comune;
@@ -507,7 +509,7 @@ public class Documento {
     }
 
     public String getMandante_provincia() {
-        if(mandante_provincia.equals(""))
+        if(isMandante_cliente())
             return cliente_provincia;
         else
             return mandante_provincia;
@@ -864,7 +866,7 @@ public class Documento {
     }
 
     public String getOtp_data_ora_verifica_mandante() {
-        if(otp_data_ora_verifica_mandante==null)
+        if(isMandante_cliente())
             return otp_data_ora_verifica;
         else
             return otp_data_ora_verifica_mandante;
@@ -956,7 +958,7 @@ public class Documento {
     }
 
     public String getMandante_luogo_nascita() {
-        if(mandante_luogo_nascita.equals(""))
+        if(isMandante_cliente())
             return cliente_luogo_nascita;
         else
             return mandante_luogo_nascita;
@@ -967,14 +969,14 @@ public class Documento {
     }
 
     public String getMandante_data_nascita() {
-        if(mandante_data_nascita==null || mandante_data_nascita.equals(""))
+        if(isMandante_cliente())
             return cliente_data_nascita;
         else
             return mandante_data_nascita;
     }
 
     public String getMandante_cellulare() {
-        if(mandante_cellulare==null || mandante_cellulare.equals(""))
+        if(isMandante_cliente())
             return cliente_cellulare;
         else
             return mandante_cellulare;
@@ -1029,19 +1031,19 @@ public class Documento {
         else
             return false;
     }
+
+    public String getMandante_diverso() {
+        return mandante_diverso;
+    }
+
+    public void setMandante_diverso(String mandante_diverso) {
+        this.mandante_diverso = mandante_diverso;
+    }
     
     public boolean isMandante_cliente(){
-        if(cliente_privato_azienda.equals("azienda"))
-            return false;
-        return 
-            Utility.elimina_null(mandante_nome).equals("") &&
-            Utility.elimina_null(mandante_cognome).equals("") &&
-            Utility.elimina_null(mandante_cf).equals("") &&
-            Utility.elimina_null(mandante_indirizzo).equals("") &&
-            Utility.elimina_null(mandante_comune).equals("") &&
-            Utility.elimina_null(mandante_provincia).equals("") &&
-            Utility.elimina_null(mandante_luogo_nascita).equals("") &&
-            Utility.elimina_null(mandante_data_nascita).equals("");
+        if(mandante_diverso.equals("")) return true;
+        else return false;
+              
     }
     
     public String toString(){

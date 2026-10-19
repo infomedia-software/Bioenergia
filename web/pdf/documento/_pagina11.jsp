@@ -17,7 +17,7 @@ Font font_bold_p11=new Font(Font.FontFamily.HELVETICA,10,Font.NORMAL,BaseColor.B
 Font font_piccolo_p11=new Font(Font.FontFamily.HELVETICA,9,Font.NORMAL,BaseColor.BLACK);
 Font font_corsivo_p11=new Font(Font.FontFamily.HELVETICA,9,Font.ITALIC,BaseColor.BLACK);
 Font font_titolo_p11=new Font(Font.FontFamily.HELVETICA,11,Font.BOLD,BaseColor.BLACK);
-
+Font font_piccolo_p8=new Font(Font.FontFamily.HELVETICA,8,Font.NORMAL,BaseColor.BLACK);
 Paragraph p;
 
 p=new Paragraph("ALLEGATO “GSE”  - PRESENTAZIONE DELLA DOMANDA AL GSE PER IL “RITIRO DEDICATO”",font_titolo_p11);
@@ -194,6 +194,7 @@ if(d.isMandante_cliente()){
         data_ora_verifica_otp=Utility.converti_datetime_formato_it(d.getOtp_data_ora_verifica_mandante());
 }
 
+
 if(!firma_cliente.equals("")){
     if(firma_cliente.contains(","))
         firma_cliente=firma_cliente.substring(firma_cliente.indexOf(",")+1);
@@ -204,14 +205,6 @@ if(!firma_cliente.equals("")){
         img_firma.scaleToFit(160,70);
         img_firma.setAlignment(Image.ALIGN_CENTER);
         firma_cell.addElement(img_firma);
-
-        if(!data_ora_verifica_otp.equals("")){
-            Paragraph data_firma=new Paragraph("Firma verificata tramite OTP il "+data_ora_verifica_otp,font_normale_p11);
-            data_firma.setAlignment(Element.ALIGN_CENTER);
-            data_firma.setSpacingBefore(1);
-            firma_cell.addElement(data_firma);
-        }
-
     }catch(Exception e){
         System.out.println("Errore firma cliente pagina 11: "+e.getMessage());
     }
@@ -219,6 +212,13 @@ if(!firma_cliente.equals("")){
     Paragraph riga_firma=new Paragraph("____________________________",font_normale_p11);
     riga_firma.setAlignment(Element.ALIGN_CENTER);
     firma_cell.addElement(riga_firma);
+}
+
+if(!data_ora_verifica_otp.equals("")){
+    Paragraph data_firma=new Paragraph("Firma verificata con OTP da "+d.getCliente_cognome()+" "+d.getCliente_nome()+" il "+data_ora_verifica_otp,font_piccolo_p8);
+    data_firma.setAlignment(Element.ALIGN_CENTER);
+    data_firma.setSpacingBefore(1);
+    firma_cell.addElement(data_firma);
 }
 
 tabella_firma.addCell(firma_cell);

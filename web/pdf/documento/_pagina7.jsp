@@ -46,32 +46,27 @@ firma_mandante_titolo.setSpacingAfter(5);
 cella_firme.addElement(firma_mandante_titolo);
 
 String firma_mandante=Utility.elimina_null(documento.getFirma_mandante());
-
+String data_otp_mandante=Utility.elimina_null(Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica_mandante()));
 if(!firma_mandante.equals("")){
     if(firma_mandante.contains(","))
         firma_mandante=firma_mandante.substring(firma_mandante.indexOf(",")+1);
-
     try{
         byte[] firma_bytes=Base64.getDecoder().decode(firma_mandante);
-
         Image img_firma_mandante=Image.getInstance(firma_bytes);
         img_firma_mandante.scaleToFit(150,55);
         img_firma_mandante.setAlignment(Image.ALIGN_CENTER);
         cella_firme.addElement(img_firma_mandante);
-
-        String data_otp_mandante=Utility.elimina_null(Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica_mandante()));
-        
-        if(!data_otp_mandante.equals("")){
-            Paragraph data_firma_mandante=new Paragraph("Firma verificata tramite OTP il "+data_otp_mandante,font_piccolo_p7);
-            data_firma_mandante.setAlignment(Element.ALIGN_CENTER);
-            data_firma_mandante.setSpacingBefore(2);
-            data_firma_mandante.setSpacingAfter(0);
-            cella_firme.addElement(data_firma_mandante);
-        }
-
     }catch(Exception e){
         System.out.println("Errore firma mandante: "+e.getMessage());
     }
+}
+
+if(!data_otp_mandante.equals("")){
+    Paragraph data_firma_mandante=new Paragraph("Firmato con OTP da "+documento.getCliente_cognome()+" "+documento.getCliente_cognome()+" il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo_p7);
+    data_firma_mandante.setAlignment(Element.ALIGN_CENTER);
+    data_firma_mandante.setSpacingBefore(2);
+    data_firma_mandante.setSpacingAfter(0);
+    cella_firme.addElement(data_firma_mandante);
 }
 
 /* FIRMA MANDATARIO */

@@ -19,7 +19,7 @@ Font font_bold_p12=new Font(Font.FontFamily.HELVETICA,9,Font.BOLD,BaseColor.BLAC
 Font font_x_p12=new Font(Font.FontFamily.HELVETICA,9,Font.BOLD,BaseColor.BLACK);
 Font font_titolo_p12=new Font(Font.FontFamily.HELVETICA,12,Font.BOLD,BaseColor.BLACK);
 Font font_piccolo_p12=new Font(Font.FontFamily.HELVETICA,7,Font.ITALIC,BaseColor.BLACK);
-
+Font font_piccolo_p8=new Font(Font.FontFamily.HELVETICA,7,Font.ITALIC,BaseColor.BLACK);
 Paragraph p;
 
 
@@ -367,21 +367,17 @@ if(!firma_cliente.equals("")){
         Image img_firma=Image.getInstance(firma_bytes);
         img_firma.scaleToFit(160,70);
         img_firma.setAlignment(Image.ALIGN_CENTER);
-
         firma_cliente_cell.addElement(img_firma);
-
-        if(!data_ora_verifica_otp.equals("")){
-            Paragraph data_firma=new Paragraph("Firma verificata tramite OTP il "+data_ora_verifica_otp,font_normale_p12);
-            data_firma.setAlignment(Element.ALIGN_CENTER);
-            data_firma.setSpacingBefore(1);
-            firma_cliente_cell.addElement(data_firma);
-        }
-
     }catch(Exception e){
         System.out.println("Errore firma cliente pagina 12: "+e.getMessage());
     }
 }
-
+if(!data_ora_verifica_otp.equals("")){
+    Paragraph data_firma=new Paragraph("Firmato con OTP da "+d.getCliente_cognome()+" "+d.getCliente_cognome()+" il "+Utility.converti_datetime_formato_it(d.getOtp_data_ora_verifica()),font_piccolo_p12);
+    data_firma.setAlignment(Element.ALIGN_CENTER);
+    data_firma.setSpacingBefore(1);
+    firma_cliente_cell.addElement(data_firma);
+}
 firme.addCell(firma_cliente_cell);
 
 /* TECNICO */
