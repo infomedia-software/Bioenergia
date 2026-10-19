@@ -215,7 +215,8 @@ if(!firma_cliente.equals("")){
 }
 
 if(!data_ora_verifica_otp.equals("")){
-    Paragraph data_firma=new Paragraph("Firma verificata con OTP da "+d.getCliente_cognome()+" "+d.getCliente_nome()+" il "+data_ora_verifica_otp,font_piccolo_p8);
+    Paragraph data_firma=new Paragraph("Firma verificata con OTP da "+d.getCliente_cognome()+" "+d.getCliente_nome()+" il "+data_ora_verifica_otp+"\nIP: "+d.getOtp_ip_string(),font_piccolo_p8);
+    
     data_firma.setAlignment(Element.ALIGN_CENTER);
     data_firma.setSpacingBefore(1);
     firma_cell.addElement(data_firma);

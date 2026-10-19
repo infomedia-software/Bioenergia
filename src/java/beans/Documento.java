@@ -828,6 +828,12 @@ public class Documento {
     public String getOtp_ip() {
         return otp_ip;
     }
+    
+    public String getOtp_ip_string() {
+        if(otp_ip!=null && otp_ip.contains("_"))
+            otp_ip=otp_ip.substring(otp_ip.lastIndexOf("_")+1, otp_ip.length()-1);
+        return otp_ip;
+    }
 
     public void setOtp_ip(String otp_ip) {
         this.otp_ip = otp_ip;

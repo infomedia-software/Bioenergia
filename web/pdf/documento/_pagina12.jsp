@@ -373,7 +373,7 @@ if(!firma_cliente.equals("")){
     }
 }
 if(!data_ora_verifica_otp.equals("")){
-    Paragraph data_firma=new Paragraph("Firmato con OTP da "+d.getCliente_cognome()+" "+d.getCliente_cognome()+" il "+Utility.converti_datetime_formato_it(d.getOtp_data_ora_verifica()),font_piccolo_p12);
+    Paragraph data_firma=new Paragraph("Firmato con OTP da "+d.getCliente_cognome()+" "+d.getCliente_cognome()+" il "+Utility.converti_datetime_formato_it(d.getOtp_data_ora_verifica())+"\nIP: "+d.getOtp_ip_string(),font_piccolo_p12);
     data_firma.setAlignment(Element.ALIGN_CENTER);
     data_firma.setSpacingBefore(1);
     firma_cliente_cell.addElement(data_firma);

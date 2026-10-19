@@ -487,7 +487,7 @@
     * Data e ora verifica OTP
     */
    if(documento.getOtp_data_ora_verifica()!=null){
-       Paragraph data_firma=new Paragraph("Firmato con OTP da "+documento.getCliente_cognome()+" "+documento.getCliente_cognome()+" il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo);
+       Paragraph data_firma=new Paragraph("Firmato con OTP da "+documento.getCliente_cognome()+" "+documento.getCliente_cognome()+" il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica())+"\nIP: "+documento.getOtp_ip_string(),font_piccolo);
        data_firma.setSpacingBefore(1);
        cliente_firma.addElement(data_firma);
    }
@@ -680,7 +680,7 @@
             * Data e ora verifica OTP
             */
         if(documento.getOtp_data_ora_verifica()!=null){
-            Paragraph data_firma=new Paragraph("Firma OTP: "+documento.getCliente_cognome()+" "+documento.getCliente_nome()+" - "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo);
+            Paragraph data_firma=new Paragraph("Firma OTP: "+documento.getCliente_cognome()+" "+documento.getCliente_nome()+" - "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica())+"\nIP: "+documento.getOtp_ip_string(),font_piccolo);
             data_firma.setSpacingBefore(1);
             firma_inf.addElement(data_firma);
         }

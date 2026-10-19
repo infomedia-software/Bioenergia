@@ -62,7 +62,7 @@ if(!firma_mandante.equals("")){
 }
 
 if(!data_otp_mandante.equals("")){
-    Paragraph data_firma_mandante=new Paragraph("Firmato con OTP da "+documento.getCliente_cognome()+" "+documento.getCliente_cognome()+" il "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica()),font_piccolo_p7);
+    Paragraph data_firma_mandante=new Paragraph("Firmato con OTP da "+documento.getCliente_cognome()+" "+documento.getCliente_cognome()+"\nil "+Utility.converti_datetime_formato_it(documento.getOtp_data_ora_verifica())+"\nIP:"+documento.getOtp_ip_string(),font_piccolo_p7);
     data_firma_mandante.setAlignment(Element.ALIGN_CENTER);
     data_firma_mandante.setSpacingBefore(2);
     data_firma_mandante.setSpacingAfter(0);
