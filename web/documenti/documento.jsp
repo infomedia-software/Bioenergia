@@ -886,11 +886,11 @@
                     </div>
 
                     <div class="riga_servizio">
-                        <label><input type="checkbox" class="servizio_incluso" value="Rilascio della documentazione necessaria per l’ottenimento della detrazione fiscale, ove spettante" <%=d.getServizi_inclusi().contains("Rilascio della documentazione necessaria per l’ottenimento della detrazione fiscale, ove spettante") ? "checked" : ""%> onchange="modifica_servizi_inclusi()"> Rilascio della documentazione necessaria per l’ottenimento della detrazione fiscale, ove spettante;</label>
+                        <label><input type="checkbox" class="servizio_incluso" value="Rilascio della documentazione necessaria per l’ottenimento della detrazione fiscale, ove spettante (inclusa pratica Enea)" <%=d.getServizi_inclusi().contains("Rilascio della documentazione necessaria per l’ottenimento della detrazione fiscale, ove spettante (inclusa pratica Enea)") ? "checked" : ""%> onchange="modifica_servizi_inclusi()"> Rilascio della documentazione necessaria per l’ottenimento della detrazione fiscale, ove spettante (inclusa pratica Enea);</label>
                     </div>
 
                     <div class="riga_servizio">
-                        <label><input type="checkbox" class="servizio_incluso" value="Assistenza nella gestione della pratica di Scambio sul Posto o ritiro dedicato" <%=d.getServizi_inclusi().contains("Assistenza nella gestione della pratica di Scambio sul Posto o ritiro dedicato") ? "checked" : ""%> onchange="modifica_servizi_inclusi()"> Assistenza nella gestione della pratica di Scambio sul Posto o ritiro dedicato.</label>
+                        <label><input type="checkbox" class="servizio_incluso" value="Assistenza nella gestione della pratica con ritiro dedicato" <%=d.getServizi_inclusi().contains("Assistenza nella gestione della pratica con ritiro dedicato") ? "checked" : ""%> onchange="modifica_servizi_inclusi()"> Assistenza nella gestione della pratica con ritiro dedicato.</label>
                     </div>
                 </div>
                 

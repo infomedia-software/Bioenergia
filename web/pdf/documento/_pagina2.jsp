@@ -21,7 +21,7 @@
     Font font_titolo=(Font)request.getAttribute("font_titolo");
     Font font_totale=(Font)request.getAttribute("font_totale");
 
-    String osservazioni=Utility.elimina_null(documento.getOsservazioni());
+    String osservazioni=Utility.elimina_null(documento.getOsservazioni()).replaceAll("<br>", "\n");
     /*
      * HEADER
      */
@@ -130,14 +130,7 @@
 
         String servizio=servizi[i];
 
-        boolean incluso=false;
-        
-        for(String s:servizi_inclusi.split(",")){
-            if(s.trim().equalsIgnoreCase(servizio)){
-                incluso=true;
-                break;
-            }
-        }
+        boolean incluso=servizi_inclusi.contains(servizio);
         
         String simbolo=incluso ? pallino_pieno : pallino_vuoto;
 
