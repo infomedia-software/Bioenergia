@@ -1,21 +1,40 @@
+<%@page import="gestioneDB.GestioneFinanziamento"%>
+<%@page import="beans.Finanziamento"%>
 <%@page import="gestioneDB.GestioneDocumento"%>
 <%@page import="beans.Soggetto"%>
 <%@page import="beans.Documento"%>
 <%@page import="utility.Utility"%>
 <%
     String id_documento=Utility.elimina_null(request.getParameter("id_documento"));
+    String id_finanziamento=Utility.elimina_null(request.getParameter("id_finanziamento"));
     String otp_sms=Utility.elimina_null(request.getParameter("otp_sms"));
     String mandante=Utility.elimina_null(request.getParameter("mandante"));
     int limite_tentativi_falliti=5;
-    Documento documento=GestioneDocumento.getIstanza().get_documento(id_documento);
-    String data_ora_scadenza=documento.getOtp_data_ora_scadenza();
-    int tentativi_falliti=documento.getOtp_tentativi_falliti();
+    Documento documento=null;
+    Finanziamento finanziamento=null;
+    if(!id_documento.equals(""))
+        documento=GestioneDocumento.getIstanza().get_documento(id_documento);
+    if(!id_finanziamento.equals(""))
+        finanziamento=GestioneFinanziamento.getIstanza().get_finanziamento(id_finanziamento);
+    
+    String data_ora_scadenza="";
+    int tentativi_falliti=0;
     String tipo="cliente";
-    if(mandante.equals("si")){
-        tentativi_falliti=documento.getOtp_tentativi_falliti_mandante();
-        data_ora_scadenza=documento.getOtp_data_ora_scadenza_mandante();
-        tipo="mandante";
+    if(documento!=null){
+        data_ora_scadenza=documento.getOtp_data_ora_scadenza();
+        tentativi_falliti=documento.getOtp_tentativi_falliti();
+        if(mandante.equals("si")){
+            tentativi_falliti=documento.getOtp_tentativi_falliti_mandante();
+            data_ora_scadenza=documento.getOtp_data_ora_scadenza_mandante();
+            tipo="mandante";
+        }
     }
+    
+    if(finanziamento!=null){
+        data_ora_scadenza=finanziamento.getOtp_data_ora_scadenza_garante();
+        tentativi_falliti=finanziamento.getOtp_tentativi_falliti_garante();
+    }
+    
 %>
 
 <html>
@@ -111,7 +130,9 @@
                                 <% if(!id_documento.equals("")){%>
                                     location.href="<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=id_documento%>";
                                 <%}%>
-                                
+                                <% if(!id_finanziamento.equals("")){%>
+                                    location.href="<%=Utility.url%>/finanziamenti/finanziamento.jsp?id_finanziamento=<%=id_finanziamento%>";
+                                <%}%>
                             }
                             
                         },
@@ -144,6 +165,7 @@
                 <form method="post" onsubmit="return verifica_Otp();" id='form_verifica_otp'>
                     <label for="otp_email" class="otp-label">Inserisci il Codice OTP ricevuto al numero <%=otp_sms%></label>
                     <input type='hidden' name='id_documento' value='<%=id_documento%>'>
+                    <input type='hidden' name='id_finanziamento' value='<%=id_finanziamento%>'>
                     <input type='hidden' name='mandante' value='<%=mandante%>'>
                     <input type="text" id="otp_codice" name="otp_codice" class="otp-input" value="" placeholder="Inserisci qui il tuo Codice OTP di verifica" required>
 
@@ -157,6 +179,15 @@
                             <% if(tentativi_falliti>=5 || (data_ora_scadenza!=null && Utility.viene_prima(data_ora_scadenza, Utility.data_ora_corrente())) ){%>
                                 <div class="height-10"></div>
                                 <a class="pulsante arancio" href="<%=Utility.url%>/otp/genera_otp.jsp?id_documento=<%=id_documento%>">GENERA NUOVO OTP</a>
+                                <div class="clear"></div>
+                            <%}%>
+                        <%}%>
+                        
+                        <% if(finanziamento!=null){%>
+                            Codice OTP valido fino al <%=Utility.converti_datetime_formato_it(data_ora_scadenza)%>
+                            <% if(tentativi_falliti>=5 || (data_ora_scadenza!=null && Utility.viene_prima(data_ora_scadenza, Utility.data_ora_corrente())) ){%>
+                                <div class="height-10"></div>
+                                <a class="pulsante arancio" href="<%=Utility.url%>/otp/genera_otp.jsp?id_finanziamento=<%=id_finanziamento%>">GENERA NUOVO OTP</a>
                                 <div class="clear"></div>
                             <%}%>
                         <%}%>

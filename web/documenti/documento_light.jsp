@@ -13,6 +13,11 @@
     Soggetto utente=(Soggetto)session.getAttribute("utente");
     String id_documento=Utility.elimina_null(request.getParameter("id_documento"));
     Documento d=GestioneDocumento.getIstanza().get_documento(id_documento);
+    ArrayList<Item> situazioni=null;
+    if(d.is_contratto())
+        situazioni=GestioneItems.getIstanza().ricerca("documento", "id_situazione");
+    if(d.is_preventivo())
+        situazioni=GestioneItems.getIstanza().ricerca("preventivo", "id_situazione");
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -64,10 +69,23 @@
                 <a class="pulsante" href="<%=Utility.url%>/documenti/index.jsp?tipo=<%=d.getTipo()%>">
                     <i class="fa-solid fa-arrow-left"></i>Torna alla Lista
                 </a>
-               
-                <button class="pulsante grigio float-right" onclick="window.open('<%=Utility.url%>/pdf/documento/pdf_documento.jsp?id_documento=<%=id_documento%>')" >
-                    <i class="fa-solid fa-print"></i>PDF
-                </button>
+                <% if(d.is_contratto()){%>
+                    <% if(d.is_contratto_accumulo() || d.is_contratto_fotovoltaico() || d.is_contratto_fotovoltaico_accumulo() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
+                        <button class="pulsante float-right" style="background:#e67e22;color:white;" onclick="window.open('<%=Utility.url%>/pdf/documento/pdf_documento.jsp?id_documento=<%=id_documento%>')">
+                            <i class="fa-solid fa-file-contract"></i> PDF <% if(d.is_contratto_accumulo()){%>ACCUMULO<%}else{%> FOTOVOLTAICO<%}%>
+                        </button>
+                    <%}%>
+                    <% if(d.is_contratto_conto_termico() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
+                        <button class="pulsante float-right" style="background:#16a34a;color:white;" onclick="window.open('<%=Utility.url%>/pdf/conto_termico/pdf_conto_termico.jsp?id_documento=<%=id_documento%>')">
+                            <i class="fa-solid fa-file-pdf"></i> PDF CONTO TERMICO
+                        </button>
+                    <%}%>
+                <%}%>
+                <% if(d.is_preventivo()){%>
+                    <button class="pulsante grigio float-right" onclick="window.open('<%=Utility.url%>/pdf/preventivo/pdf_preventivo.jsp?id_documento=<%=id_documento%>')" >
+                        <i class="fa-solid fa-print"></i>PDF
+                    </button>
+                <%}%>
             </div>
                 <div class="col_100">
                     <table>
@@ -75,12 +93,13 @@
                             <td colspan="2">
                                 <label>Stato</label><br>
                                 <select id="id_situazione" onchange="modifica_documento(this);">                                    
-                                <% for(Item sit:GestioneItems.getIstanza().ricerca("documento", "id_situazione")){%>
+                                <% for(Item sit:situazioni){%>
                                     <option value="<%=sit.getId()%>" <%=Utility.selected_se_uguali(sit.getId(), d.getId_situazione()+"")%>><%=sit.getValore()%></option>
                                 <%}%>
                                 </select>
                             </td>
                         </tr>
+                        <% if(d.is_contratto()){%>
                         <tr>
                             <td style="vertical-align: top;">
                                 <label>IBAN</label><br>
@@ -91,6 +110,7 @@
                                 <textarea id="note1" onchange="modifica_documento(this)" class="no_controllo"><%=Utility.elimina_null(Utility.standardizza_testo_textarea(d.getNote1()))%></textarea>
                             </td>
                         </tr>
+                        <%}%>
                     </table>
                 </div>
                     

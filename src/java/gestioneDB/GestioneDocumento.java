@@ -92,6 +92,11 @@ public class GestioneDocumento {
                 documento.setId_soggetto(rs.getInt("id_soggetto"));
                 documento.setId_situazione(rs.getInt("id_situazione"));
                 
+                documento.setContratto_tipologia(rs.getString("contratto_tipologia"));
+                documento.setContratto_finanziamento(rs.getString("contratto_finanziamento"));
+                documento.setConto_termico_tipo(rs.getString("conto_termico_tipo"));
+                documento.setValidita(rs.getString("validita"));
+                
                 Soggetto autore = new Soggetto();
                 autore.setId(String.valueOf(documento.getId_autore()));
                 autore.setNome(rs.getString("autore_nome"));
@@ -122,6 +127,7 @@ public class GestioneDocumento {
                 documento.setNote2(rs.getString("note2"));
                 documento.setNote3(rs.getString("note3"));
 
+                documento.setAliquota(rs.getDouble("aliquota"));
                 documento.setImponibile(rs.getDouble("imponibile"));
                 documento.setIva(rs.getDouble("iva"));
                 documento.setTotale(rs.getDouble("totale"));
@@ -294,11 +300,12 @@ public class GestioneDocumento {
 
                 riga.setId(rs.getInt("id"));
                 riga.setId_documento(rs.getInt("id_documento"));
-
+                riga.setTipo(rs.getString("riga.tipo"));
                 riga.setDescrizione(Utility.elimina_null(rs.getString("descrizione")));
 
                 riga.setImponibile(rs.getDouble("imponibile"));
                 riga.setIva(rs.getDouble("iva"));
+                riga.setAliquota(rs.getDouble("aliquota"));
                 riga.setTotale(rs.getDouble("totale"));
 
                 riga.setStato(rs.getString("stato"));

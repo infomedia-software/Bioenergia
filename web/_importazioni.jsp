@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="<%=Utility.url%>/css/stile.css?v=2">
+<link rel="stylesheet" href="<%=Utility.url%>/css/stile.css?v=2.6">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -28,6 +28,8 @@
 
 <link rel="icon" type="image/png" href="<%=Utility.url%>/img/favicon.png">
 
+<!-- CK EDITOR 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 
 <script type="text/javascript">
    
@@ -140,4 +142,54 @@
             }
         });
     }
+    
+    function function_modifica_finanziamento(id_finanziamento,campo,new_valore,refresh){
+        if(refresh=="si")
+            mostra_loader("Operazione in corso...");
+        $.ajax({
+            type:"POST",
+            url:"<%=Utility.url%>/finanziamenti/__modifica_finanziamento.jsp",
+            data:{
+                id_finanziamento:id_finanziamento,
+                campo_da_modificare:campo,
+                new_valore:new_valore
+            },
+            dataType:"html",
+            success:function(msg){
+                if(refresh=="si")
+                    aggiorna_finanziamento();
+            },
+            error:function(){
+                alert("Errore durante la modifica del documento");
+            }
+        });
+    }
+    
+             
+    function controlla_campi_vuoti(){
+        $("input, select, textarea").each(function(){
+            var campo=$(this);
+            var tipo=campo.attr("type");
+
+            if(tipo=="hidden" || tipo=="button" || tipo=="submit" || campo.hasClass("no_controllo"))
+                return;
+
+            if(tipo=="radio"){
+                var nome=campo.attr("name");
+
+                if($("input[name='"+nome+"']:checked").length>0)
+                    $("input[name='"+nome+"']").removeClass("campo_errore");
+                else
+                    $("input[name='"+nome+"']").addClass("campo_errore");
+
+                return;
+            }
+
+            if($.trim(campo.val())=="")
+                campo.addClass("campo_errore");
+            else
+                campo.removeClass("campo_errore");
+        });
+    }
+
 </script>

@@ -7,7 +7,7 @@
 <%@page import="utility.Utility"%>
 <%@page import="beans.Documento"%>
 <%@page import="beans.Soggetto"%>
-
+<%@page contentType="application/pdf" pageEncoding="UTF-8" trimDirectiveWhitespaces="true"%>
 <%
     Soggetto utente=(Soggetto)session.getAttribute("utente");
     String id_documento=Utility.elimina_null(request.getParameter("id_documento"));
@@ -73,23 +73,27 @@
 
 <%pdf.newPage();%>
 
-<jsp:include page="_pagina8.jsp"/>
+<% if(documento.is_contratto_fotovoltaico() || documento.is_contratto_fotovoltaico_accumulo() || documento.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
+    <jsp:include page="_pagina8.jsp"/>
 
-<%pdf.newPage();%>
+    <%pdf.newPage();%>
 
-<jsp:include page="_pagina9.jsp"/>
+    <jsp:include page="_pagina9.jsp"/>
 
-<%pdf.newPage();%>
+    <%pdf.newPage();%>  
+<%}%>
 
 <jsp:include page="_pagina10.jsp"/>
 
 <%pdf.newPage();%>
 
-<jsp:include page="_pagina11.jsp"/>
+<% if(documento.is_contratto_fotovoltaico() || documento.is_contratto_fotovoltaico_accumulo() || documento.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
+    <jsp:include page="_pagina11.jsp"/>
 
-<%pdf.newPage();%>
+    <%pdf.newPage();%>
 
-<jsp:include page="_pagina12.jsp"/>
+    <jsp:include page="_pagina12.jsp"/>
+<%}%>
 <%
     pdf.close();
     writer.close();

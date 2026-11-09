@@ -1,3 +1,5 @@
+<%@page import="gestioneDB.GestioneFinanziamento"%>
+<%@page import="beans.Finanziamento"%>
 <%@page import="beans.Item"%>
 <%@page import="gestioneDB.GestioneItems"%>
 <%@page import="java.util.ArrayList"%>
@@ -11,8 +13,14 @@
 <%@page import="utility.Utility"%>
 <%
     Soggetto utente=(Soggetto)session.getAttribute("utente");
+    if(utente==null){
+        response.sendRedirect(Utility.url+"/errore.jsp?errore=Sessione%20Scaduta");
+        return;
+    }  
     String id_documento=Utility.elimina_null(request.getParameter("id_documento"));
     Documento d=GestioneDocumento.getIstanza().get_documento(id_documento);
+    if(d.is_preventivo())
+        response.sendRedirect(Utility.url+"/documenti/preventivo.jsp?id_documento="+id_documento);
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -46,6 +54,11 @@
 
                     if(inField.id === "stato" && inField.value === "-1"){
                         window.location = "<%=Utility.url%>/documenti/index.jsp?tipo=<%=d.getTipo()%>";
+                    }
+                    
+                    if(inField.id === "contratto_tipologia" ){
+                        location.reload();
+                        return;
                     }
 
                     if(inField.getAttribute("refresh")=="si"){
@@ -327,32 +340,7 @@
             });
         }
             
-            
-        function controlla_campi_vuoti(){
-            $("input, select, textarea").each(function(){
-                var campo=$(this);
-                var tipo=campo.attr("type");
-
-                if(tipo=="hidden" || tipo=="button" || tipo=="submit" || campo.hasClass("no_controllo"))
-                    return;
-
-                if(tipo=="radio"){
-                    var nome=campo.attr("name");
-
-                    if($("input[name='"+nome+"']:checked").length>0)
-                        $("input[name='"+nome+"']").removeClass("campo_errore");
-                    else
-                        $("input[name='"+nome+"']").addClass("campo_errore");
-
-                    return;
-                }
-
-                if($.trim(campo.val())=="")
-                    campo.addClass("campo_errore");
-                else
-                    campo.removeClass("campo_errore");
-            });
-        }
+        
         
         $(document).ready(function(){
             controlla_campi_vuoti();
@@ -362,6 +350,25 @@
             controlla_campi_vuoti();
         });
         
+        
+        function aggiungi_finanziamento(){
+            mostra_loader("Operazione in corso...");
+            $.ajax({
+                type: "POST",
+                url: "<%=Utility.url%>/finanziamenti/__aggiungi_finanziamento.jsp",
+                data: {
+                    id_documento: <%=id_documento%>,
+                },
+                dataType: "html",
+                success: function(msg){
+                    location.href="<%=Utility.url%>/finanziamenti/finanziamento.jsp?id_finanziamento="+msg;
+                },
+                error: function(){
+                    alert("Errore durante il salvataggio aggiungi_finanziamento");
+                }
+            });    
+        }
+            
         </script>
         
     </head>
@@ -375,13 +382,20 @@
                 <a class="pulsante" href="<%=Utility.url%>/documenti/index.jsp?tipo=<%=d.getTipo()%>">
                     <i class="fa-solid fa-arrow-left"></i>Torna alla Lista
                 </a>
-                    
                 <button class="pulsante cancella float-right" onclick="modifica_documento(this)" id="stato" value="-1">
                     <i class="fa-solid fa-trash"></i>Cancella
                 </button>
-                <button class="pulsante grigio float-right" onclick="window.open('<%=Utility.url%>/pdf/documento/pdf_documento.jsp?id_documento=<%=id_documento%>')" >
-                    <i class="fa-solid fa-print"></i>PDF
-                </button>
+                    
+                <% if(d.is_contratto_accumulo() || d.is_contratto_fotovoltaico() || d.is_contratto_fotovoltaico_accumulo() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
+                    <button class="pulsante float-right" style="background:#e67e22;color:white;" onclick="window.open('<%=Utility.url%>/pdf/documento/pdf_documento.jsp?id_documento=<%=id_documento%>')">
+                        <i class="fa-solid fa-file-contract"></i> PDF <% if(d.is_contratto_accumulo()){%>ACCUMULO<%}else{%> FOTOVOLTAICO<%}%>
+                    </button>
+                <%}%>
+                <% if(d.is_contratto_conto_termico() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
+                    <button class="pulsante float-right" style="background:#16a34a;color:white;" onclick="window.open('<%=Utility.url%>/pdf/conto_termico/pdf_conto_termico.jsp?id_documento=<%=id_documento%>')">
+                        <i class="fa-solid fa-file-pdf"></i> PDF CONTO TERMICO
+                    </button>
+                <%}%>
             </div>
             <div class="box">
                 <table>
@@ -429,7 +443,7 @@
                             </label>
                         </td-->
                         <td>Stato</td>
-                        <td colspan="2">
+                        <td>
                             <label>
                                 <select id="id_situazione" onchange="modifica_documento(this);">                                    
                                     <% for(Item sit:GestioneItems.getIstanza().ricerca("documento", "id_situazione")){%>
@@ -438,10 +452,38 @@
                                 </select>
                             </label>
                         </td>
+                        <td>Tipologia Contratto</td>
+                        <td>
+                            <label>
+                                <select id="contratto_tipologia" class="pointer_events_none" refresh="si" <%if(!utente.is_amministratore()){%>disabled="true" style="pointer-events: none;"<%}%> onchange="modifica_documento(this);">
+                                    <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_FOTOVOLTAICO) ? "selected" : ""%>>Fotovoltaico</option>
+                                    <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO) ? "selected" : ""%>>Fotovoltaico + Accumulo</option>
+                                    <option value="<%=Documento.CONTRATTO_ACCUMULO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_ACCUMULO) ? "selected" : ""%>>Accumulo</option>
+                                    <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO_CONTO_TERMICO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO_CONTO_TERMICO) ? "selected" : ""%>>Fotovoltaico + Accumulo + Conto Termico</option>
+                                    <option value="<%=Documento.CONTRATTO_CONTO_TERMICO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_CONTO_TERMICO) ? "selected" : ""%>>Conto Termico</option>
+                                </select>
+                            </label>
+                        </td>
                     </tr>
                 </table>
             </div>
             <div class="box" id="div_documento_intestazione">
+                <% if(d.is_contratto_conto_termico() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
+                <table>
+                    <tr>
+                        <th>Tipo Conto Termico</th>
+                        <td>
+                            <label>
+                            <select id="conto_termico_tipo" <%if(!utente.is_amministratore()){%>disabled="true" style="pointer-events: none;"<%}%> onchange="modifica_documento(this);">
+                                <option value="<%=Documento.CONTO_TERMICO_POMPA_DI_CALORE%>" <%=d.is_conto_termico_pompa_di_calore() ? "selected" : ""%>>Pompa di Calore</option>
+                                <option value="<%=Documento.CONTO_TERMICO_CALDAIA_IBRIDA%>" <%=d.is_conto_termico_caldaia_ibrida() ? "selected" : ""%>>Caldaia Ibrida</option>
+                            </select>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+                <div class="height-10"></div>
+                <%}%>
                 <div class="col_60 float-left">
                     <h2>
                         Dati Cliente
@@ -800,6 +842,20 @@
                             </td>
                             <td style="width: 90%;">
                                 erogazione a favore di <b>"Bioenergia S.r.l."</b> del finanziamento sottoscritto dal cliente
+                                <% if(d.getPagamento().contains("finanziamento")){%>
+                                    <% ArrayList<Finanziamento> finanziamenti=GestioneFinanziamento.getIstanza().ricerca_finanziamento(" finanziamento.id_documento="+Utility.is_null(id_documento)+" AND finanziamento.stato='1' ", "", -1); %>
+                                    <% if(finanziamenti.isEmpty()){%>
+                                        <button onclick="aggiungi_finanziamento()" style="display: none;" class="pulsante float-right" style="background-color:#7c3aed;color:white;">
+                                            <i class="fa-solid fa-hand-holding-dollar"></i>Crea Pratica Finanziamento
+                                        </button>
+                                    <%}else{%>
+                                        <% for(Finanziamento f:finanziamenti){%>
+                                        <a href="<%=Utility.url%>/finanziamenti/finanziamento.jsp?id_finanziamento=<%=f.getId()%>" class="pulsante float-right" style="background-color:#7c3aed;color:white;">
+                                            <i class="fa-solid fa-hand-holding-dollar"></i>Vedi Pratica Finanziamento
+                                        </a>
+                                        <%}%>
+                                    <%}%>
+                                <%}%>
                             </td>
                         </tr>
                     </table>
@@ -834,6 +890,7 @@
                             </tr>
                             <%}%>
                         </table>
+
                     <%}%>
                     <% if(percentuale_totale!=100){%>
                     <div class="messaggio">
@@ -906,7 +963,7 @@
                     </table>
                 </div>
                             
-                            
+                <% if(d.is_contratto_fotovoltaico() || d.is_contratto_fotovoltaico_accumulo() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
                 <!-- MODULO STRATIFICAZIONE MANTO DI COPERTURA -->
                 <div class="box">
                     <h2>Modulo stratificazione manto di copertura</h2>
@@ -1364,6 +1421,7 @@
 
                     </table>
                 </div>        
+                <%}%>
             </div>
         </div>          
     </body>

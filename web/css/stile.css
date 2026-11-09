@@ -31,7 +31,7 @@ body {
     --colore-sfondo: #f6f8fc;
     --colore-bianco: #ffffff;
     --ombra-box: 0 2px 7px rgba(15, 23, 42, .045);
-    --larghezza-menu: 232px;
+    --larghezza-menu: 195px;
 }
 
 input[type=number]::-webkit-inner-spin-button,
@@ -215,7 +215,7 @@ input[type=number]{
 .menu_utente_nome {
     overflow: hidden;
     color: #071b4f;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
     line-height: 1.2;
     white-space: nowrap;
@@ -225,7 +225,7 @@ input[type=number]{
 .menu_utente_ruolo {
     margin-top: 3px;
     color: #718096;
-    font-size: 11px;
+    font-size: 9px;
     line-height: 1.1;
 }
 
@@ -268,7 +268,7 @@ input[type=number]{
     flex: 1 1 auto;
     min-width: 0;
     min-height: 100vh;
-    padding: 24px 26px;
+    padding: 24px 15px;
     box-sizing: border-box;
     overflow-x: hidden;
 }
@@ -1168,6 +1168,31 @@ input[type="checkbox"] {
     background:#1d4ed8;
 }
 
+.ricerca-principale{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:15px 0;
+}
+
+.ricerca-principale > input[name="cerca"]{
+    flex:1 1 250px !important;
+    min-width:200px;
+    width:auto;
+}
+
+.ricerca-principale > .clear{
+    flex-basis:100%;
+    height:0;
+}
+
+.ricerca-principale > select#contratto_tipologia{
+    flex:0 0 320px;
+    width:320px;
+    max-width:100%;
+}
+
 /* ==========================================
    FILTRI RICERCA
 ========================================== */
@@ -1957,4 +1982,86 @@ input[type="radio"] {
     height:100%;
     background:#f2d500;
     border-radius:10px;
+}
+
+/* Elenchi puntati CKEditor */
+.ck-content ul{
+    list-style-type:disc!important;
+    list-style-position:outside!important;
+    padding-left:25px!important;
+    margin:5px 0!important;
+}
+
+.ck-content ul li{
+    list-style-type:disc!important;
+    display:list-item!important;
+}
+
+/* Elenchi numerati CKEditor */
+.ck-content ol{
+    list-style-type:decimal!important;
+    list-style-position:outside!important;
+    padding-left:25px!important;
+    margin:5px 0!important;
+}
+
+.ck-content ol li{
+    list-style-type:decimal!important;
+    display:list-item!important;
+}
+
+.ck-content li{
+    padding-left:2px!important;
+    margin-bottom:3px!important;
+}
+
+.ck-content li::marker{
+    color:#333;
+}
+
+.ck-content h1{font-size:22px!important;font-weight:700!important;margin:12px 0 6px!important;}
+.ck-content h2{font-size:18px!important;font-weight:700!important;margin:10px 0 5px!important;}
+.ck-content h3{font-size:15px!important;font-weight:700!important;margin:8px 0 4px!important;}
+.ck-content p{font-size:14px;margin:0 0 6px;}
+
+/* Tabella consensi */
+.tabella_consensi {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.tabella_consensi th,
+.tabella_consensi td {
+    width: 25%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    vertical-align: middle;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+.tabella_consensi th {
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.4;
+}
+
+.tabella_consensi select {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .tabella_consensi {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .tabella_consensi th,
+    .tabella_consensi td {
+        min-width: 180px;
+    }
 }

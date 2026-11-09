@@ -54,12 +54,23 @@
     </div>
     <div class="menu_divisore"></div>
     
+    <a href="<%=Utility.url%>/documenti/index.jsp?tipo=preventivo" class="<%=pagina.endsWith("index.jsp?tipo=preventivo") ? "attivo" : ""%>">
+        <i class="fa-solid fa-file-circle-check"></i>
+        <span>Preventivi</span>
+    </a>
 
     <a href="<%=Utility.url%>/documenti/index.jsp?tipo=contratto" class="<%=pagina.endsWith("index.jsp?tipo=contratto") ? "attivo" : ""%>">
         <i class="fa-solid fa-file-invoice"></i>
         <span>Contratti</span>
     </a>
+        
     <% if(utente.is_amministratore()){%>
+    
+    <a href="<%=Utility.url%>/finanziamenti/index.jsp" class="<%=pagina.contains("/finanziamenti/") ? "attivo" : ""%>" style="display: none;">
+    <i class="fa-solid fa-hand-holding-dollar"></i>
+        <span>Finanziamenti</span>
+    </a>
+    
     <div class="menu-gruppo <%=menu_anagrafiche ? "aperto" : ""%>">
         <a href="javascript:void(0);" class="menu-voce" onclick="$(this).closest('.menu-gruppo').toggleClass('aperto');">
             <i class="fa-solid fa-address-book"></i>

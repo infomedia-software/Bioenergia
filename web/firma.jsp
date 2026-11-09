@@ -1,3 +1,5 @@
+<%@page import="beans.Finanziamento"%>
+<%@page import="gestioneDB.GestioneFinanziamento"%>
 <%@page import="gestioneDB.GestioneDocumento"%>
 <%@page import="beans.Documento"%>
 <%@page import="utility.Utility"%>
@@ -12,15 +14,32 @@
     }
 
     String id_documento=Utility.elimina_null(request.getParameter("id_documento"));
+    String id_finanziamento=Utility.elimina_null(request.getParameter("id_finanziamento"));
     String campo_da_modificare=Utility.elimina_null(request.getParameter("campo_da_modificare"));
     String nuova_firma=Utility.elimina_null(request.getParameter("nuova_firma"));
 
-    Documento d=GestioneDocumento.getIstanza().get_documento(id_documento);
-
-    String firma=d.getFirma_cliente();
-
+    Documento d=null;
+    Finanziamento f=null;
+    String title="";
+    if(!id_documento.equals("")) 
+        d=GestioneDocumento.getIstanza().get_documento(id_documento);
+    if(!id_finanziamento.equals(""))
+        f=GestioneFinanziamento.getIstanza().get_finanziamento(id_finanziamento);
+        
+    String firma="";
+    if(d!=null){
+        firma=d.getFirma_cliente();
+        title=d.toString();
+    }
+    
+    if(f!=null)
+        title=f.toString();
+    
     if(campo_da_modificare.equals("firma_mandante"))
         firma=d.getFirma_mandante();
+    
+    if(campo_da_modificare.equals("firma_garante"))
+        firma=f.getFirma_garante();
 %>
 
 <!doctype html>
@@ -30,7 +49,7 @@
 
     <meta charset="utf-8">
 
-    <title>Firma <%=d.toString()%> | <%=Utility.nome_software%></title>
+    <title>Firma <%=title%> | <%=Utility.nome_software%></title>
 
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -142,7 +161,7 @@
         <div id="content">
 
             <h1>
-                <%=campo_da_modificare.replace("_"," ").toUpperCase()%> - <%=d.toString()%>
+                <%=campo_da_modificare.replace("_"," ").toUpperCase()%> - <%=title%>
             </h1>
 
             <%if(firma==null || firma.equals("") || nuova_firma.equals("si")){%>
@@ -293,10 +312,8 @@
                      * CANCELLA FIRMA
                      */
                     function pulisciFirma(){
-
                         if(signaturePad!=null)
                             signaturePad.clear();
-
                     }
 
 
@@ -304,7 +321,6 @@
                      * SALVA FIRMA
                      */
                     function salvaFirma(){
-
                         if(signaturePad==null){
                             alert("Errore inizializzazione firma");
                             return;
@@ -314,41 +330,40 @@
                             alert("Inserire la firma");
                             return;
                         }
-
                         mostra_loader("Salvataggio firma in corso...");
-
-                        /*
-                         * PNG compatibile con iPad / Safari
-                         */
                         var dataURL=signaturePad.toDataURL("image/png");
-
-                        function_modifica_documento(
-                            '<%=id_documento%>',
-                            '<%=campo_da_modificare%>',
-                            dataURL,
-                            'si'
-                        );
+                        <% if(!id_documento.equals("")){%>
+                            function_modifica_documento('<%=id_documento%>','<%=campo_da_modificare%>',dataURL,'si');
+                        <%}%>
+                        <% if(!id_finanziamento.equals("")){%>
+                            function_modifica_finanziamento('<%=id_finanziamento%>','<%=campo_da_modificare%>',dataURL,'si');
+                        <%}%>
 
                     }
 
 
                     function aggiorna_documento(){
-
                         location.href="<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=id_documento%>";
-
                     }
-
+                    function aggiorna_finanziamento(){
+                        location.href="<%=Utility.url%>/finanziamenti/finanziamento.jsp?id_finanziamento=<%=id_finanziamento%>";
+                    }
                 </script>
 
             <%}else{%>
 
                 <div class="box">
-
-                    <a class="pulsante float-left" href="<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=id_documento%>">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </a>
-
-                    <a class="pulsante verde" href="<%=Utility.url%>/firma.jsp?id_documento=<%=id_documento%>&campo_da_modificare=<%=campo_da_modificare%>&nuova_firma=si">
+                    <% if(!id_documento.equals("")){%>
+                        <a class="pulsante float-left" href="<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=id_documento%>">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    <%}%>
+                    <% if(!id_finanziamento.equals("")){%>
+                        <a class="pulsante float-left" href="<%=Utility.url%>/finanziamenti/finanziamento.jsp?id_finanziamento=<%=id_finanziamento%>">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                    <%}%>
+                    <a class="pulsante verde" href="<%=Utility.url%>/firma.jsp?id_documento=<%=id_documento%>&id_finanziamento=<%=id_finanziamento%>&campo_da_modificare=<%=campo_da_modificare%>&nuova_firma=si">
                         <i class="fa fa-plus"></i>
                         Nuova Firma
                     </a>

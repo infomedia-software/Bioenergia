@@ -35,8 +35,6 @@
         return;
     }
 
-    
-    
     Utility.getIstanza().query("UPDATE documento SET "+campo_da_modificare+"="+Utility.is_null(new_valore)+" WHERE id="+Utility.is_null(id_documento));
     
     if(campo_da_modificare.equals("cliente_privato_azienda")){
@@ -48,6 +46,17 @@
             Utility.getIstanza().query("UPDATE documento SET cliente_nome='',cliente_cognome='' WHERE id="+Utility.is_null(id_documento));
             if(!id_soggetto.equals("") && !id_soggetto.equals("0")) Utility.getIstanza().query("UPDATE soggetto SET privato_azienda='azienda',nome='',cognome='' WHERE id="+Utility.is_null(id_soggetto));
         }
+    }
+    
+    if(campo_da_modificare.equals("contratto_tipologia") && !new_valore.contains("conto_termico")){
+        //Utility.getIstanza().query("UPDATE documento SET conto_termico_tipo='' WHERE id="+Utility.is_null(id_documento));
+    }
+    
+    // aggiorno aliquota su tutte le righe e  sul documento
+    if(campo_da_modificare.equals("aliquota")){
+        Utility.getIstanza().query("UPDATE documento SET aliquota="+Utility.converti_stringa_double(new_valore)+" WHERE id="+Utility.is_null(id_documento));
+        Utility.getIstanza().query("UPDATE riga r INNER JOIN documento d ON r.id_documento=d.id SET r.aliquota=d.aliquota, r.imponibile=ROUND(r.totale/(1+d.aliquota/100),2), r.iva=r.totale-ROUND(r.totale/(1+d.aliquota/100),2) WHERE r.id_documento="+Utility.is_null(id_documento)+" AND r.stato='1' AND (r.tipo IS NULL OR r.tipo<>'descrittiva')");
+        GestioneDocumento.getIstanza().aggiorna_totali_documento(id_documento);
     }
     
     if(campo_da_modificare.equals("mandante_diverso")){

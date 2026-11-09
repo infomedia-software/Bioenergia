@@ -1,3 +1,4 @@
+<%@page import="beans.Finanziamento"%>
 <%@page import="java.util.Map"%>
 <%@page import="beans.Item"%>
 <%@page import="gestioneDB.GestioneItems"%>
@@ -28,7 +29,11 @@
     String id_situazione=Utility.elimina_null(request.getParameter("id_situazione")).trim();
     String data_da=Utility.elimina_null(request.getParameter("data_da")).trim();
     String data_a=Utility.elimina_null(request.getParameter("data_a")).trim();
-    Map<String,Item> mappa_situazioni=GestioneItems.getIstanza().mappa("documento", "id_situazione");
+    String pagamento=Utility.elimina_null(request.getParameter("pagamento")).trim();
+    String contratto_tipologia=Utility.elimina_null(request.getParameter("contratto_tipologia")).trim();
+
+    Map<String,Item> mappa_situazioni=null;
+    
     if(!id_soggetto.matches("\\d+")) id_soggetto="";
     if(!id_autore.matches("\\d+")) id_autore="";
     if(!id_situazione.matches("\\d+")) id_situazione="";
@@ -70,11 +75,23 @@
     if(!comune.equals("")) query+=" AND documento.cliente_comune LIKE '%"+comune.replace("'","''")+"%'";
     if(!provincia.equals("")) query+=" AND documento.cliente_provincia LIKE '%"+provincia.replace("'","''")+"%'";
     if(!cap.equals("")) query+=" AND documento.cliente_cap LIKE '%"+cap.replace("'","''")+"%'";
-
+    if(pagamento.equals("finanziamento"))
+        query+=" AND lower(documento.pagamento) LIKE '%finanziamento%'";
+    if(pagamento.equals("no_finanziamento"))
+        query+=" AND lower(documento.pagamento) NOT LIKE '%finanziamento%'";
+    if(pagamento.equals(Finanziamento.TIPO_STANDARD))
+        query+=" AND contratto_finanziamento = "+Utility.is_null(Finanziamento.TIPO_STANDARD);
+    if(pagamento.equals(Finanziamento.TIPO_TASSO_0))
+        query+=" AND contratto_finanziamento = "+Utility.is_null(Finanziamento.TIPO_TASSO_0);
+    
     if(!telefono.equals("")){
         String telefono_sql=telefono.replace("'","''");
         query+=" AND (documento.cliente_telefono LIKE '%"+telefono_sql+"%' OR documento.cliente_cellulare LIKE '%"+telefono_sql+"%')";
     }
+    if(!contratto_tipologia.equals("")){
+        query+=" AND documento.contratto_tipologia='"+contratto_tipologia+"'";
+    }
+
 
     if(!id_situazione.equals("")) query+=" AND documento.id_situazione="+id_situazione;
     if(!data_da.equals("")) query+=" AND documento.data>='"+data_da.replace("'","''")+"'";
@@ -92,8 +109,17 @@
     boolean filtri_aperti=!id_soggetto.equals("") || (amministratore && !id_autore.equals("")) || !numero.equals("") || !cliente.equals("") || !ragione_sociale.equals("") || !cf_piva.equals("") || !indirizzo.equals("") || !comune.equals("") || !provincia.equals("") || !cap.equals("") || !telefono.equals("") || !id_situazione.equals("") || !data_da.equals("") || !data_a.equals("");
 
     String titolo="Documenti";
-    if(tipo.equals("contratto"))
+    String oggetto="Documento";
+    if(tipo.equals("contratto")){
         titolo="Contratti";
+        oggetto="Contratto";
+        mappa_situazioni=GestioneItems.getIstanza().mappa("documento", "id_situazione");
+    }
+    if(tipo.equals("preventivo")){
+        titolo="Preventivi";
+        oggetto="Preventivo";
+        mappa_situazioni=GestioneItems.getIstanza().mappa("preventivo", "id_situazione");
+    }
 %>
 
 <html>
@@ -127,7 +153,9 @@
             }
 
         </script>
-
+        <style>
+            
+        </style>
     </head>
 
 
@@ -135,14 +163,25 @@
         <div id="container">
             <jsp:include page="../_menu.jsp"></jsp:include>
             <div id="content">
-                <h1><%=titolo%></h1>
-                  <div class="box">
+                <form id="form_ricerca" method="get" action="index.jsp" onsubmit="mostra_loader('Ricerca in corso...')">
+                <h1>
+                    <%=titolo%>
+                    <select id="contratto_tipologia" name="contratto_tipologia" class="float-right" onchange="submit();" style="height: 30px; border-radius: 5px; line-height: 30px;">
+                        <option value="" <%=contratto_tipologia.equals("") ? "selected" : ""%>>Seleziona la tipologia di contratto</option>
+                        <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO%>" <%=contratto_tipologia.equals(Documento.CONTRATTO_FOTOVOLTAICO) ? "selected" : ""%>>Fotovoltaico</option>
+                        <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO%>" <%=contratto_tipologia.equals(Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO) ? "selected" : ""%>>Fotovoltaico + Accumulo</option>
+                        <option value="<%=Documento.CONTRATTO_ACCUMULO%>" <%=contratto_tipologia.equals(Documento.CONTRATTO_ACCUMULO) ? "selected" : ""%>>Accumulo</option>
+                        <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO_CONTO_TERMICO%>" <%=contratto_tipologia.equals(Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO_CONTO_TERMICO) ? "selected" : ""%>>Fotovoltaico + Accumulo + Conto Termico</option>
+                        <option value="<%=Documento.CONTRATTO_CONTO_TERMICO%>" <%=contratto_tipologia.equals(Documento.CONTRATTO_CONTO_TERMICO) ? "selected" : ""%>>Conto Termico</option>
+                    </select>
 
-                    <form id="form_ricerca" method="get" action="index.jsp" onsubmit="mostra_loader('Ricerca in corso...')">
+                </h1>
+                <div class="box">
                         <input type="hidden" name="tipo" value="<%=tipo%>">
                         <input type="hidden" id="pagina" name="pagina" value="1">
                         <div class="ricerca-principale">
                             <input type="text" name="cerca" value="<%=cerca%>" placeholder="Cerca per cliente, indirizzo, numero, tel, ecc..." style="flex:1;">
+                                
                             <button type="submit">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                                 Cerca
@@ -160,10 +199,10 @@
                             <% if(!utente.is_gestore()){%>
                             <button type="button" class="verde" onclick="aggiungi_documento()">
                                 <i class="fa-solid fa-plus"></i>
-                                Contratto
+                                <%=oggetto%>
                             </button>
                             <%}%>
-
+                            
                         </div>
                             
                     <div id="filtri_avanzati" style="display:<%=filtri_aperti ? "block" : "none"%>;margin-top:14px;">
@@ -227,11 +266,22 @@
 
                             <tr>
                                
-
-
                                 <td>
                                     <label>Telefono / Cellulare</label><br>
                                     <input type="text" name="telefono" value="<%=telefono%>">
+                                </td>
+
+                                
+                                <td>
+                                    <label>Modalità di pagamento</label>
+                                    <select name="pagamento">
+                                        <option value="">Tutti</option>
+                                        <option value="finanziamento" <% if(pagamento.equals("finanziamento")){%> selected="true" <%}%>>Con Finanziamento</option>
+                                        <option value="<%=Finanziamento.TIPO_STANDARD%>" <% if(pagamento.equals(Finanziamento.TIPO_STANDARD)){%> selected="true" <%}%>>Finanziamento Tasso Standard</option>
+                                        <option value="<%=Finanziamento.TIPO_TASSO_0%>" <% if(pagamento.equals(Finanziamento.TIPO_TASSO_0)){%> selected="true" <%}%>>Finanziamento Tasso Zero</option>
+                                        <option value="no_finanziamento" <% if(pagamento.equals("no_finanziamento")){%> selected="true" <%}%>>Senza Finanziamento</option>
+                                        
+                                    </select>
                                 </td>
                             
                                 <td>
@@ -246,13 +296,13 @@
                                     </select>
                                 </td>
 
-                                <td colspan="2" style="vertical-align:bottom;">
+                                <td style="vertical-align:bottom;">
                                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Applica filtri</button>
                                 </td>
                             </tr>
                         </table>
                     </div>
-
+                </form>
 
                 <div style="margin:10px;">
                     Risultati:
@@ -266,6 +316,7 @@
                             <tr>
                                 <th style="width: 50px;">N.</th>
                                 <th style="width: 100px;">Data</th>
+                                <th>Tipologia</th>
                                 <%if(amministratore){%>
                                     <th>Consulente</th>
                                 <%}%>
@@ -273,8 +324,6 @@
                                 <th>CF / P.IVA</th>
                                 <!--th>Indirizzo</th-->
                                 <th>Comune</th>
-                                <th>Provincia</th>
-                                
                                 <th>Tel.</th>
                                 <th>Totale</th>
                                 <th>Stato</th>
@@ -288,6 +337,7 @@
 
                                 <td><%=documento.getNumero_completo()%></td>
                                 <td><%=documento.getData_it()%></td>
+                                <td><%=documento.getContratto_tipologia().replace("_"," ").toUpperCase()%><% if(!documento.getConto_termico_tipo_string().equals("")){%><br><%=documento.getConto_termico_tipo_string()%><%}%></td>
                                 <%if(amministratore){%>
                                     <td><%=documento.getAutore().getCognome()%> <%=documento.getAutore().getNome()%></td>
                                 <%}%>
@@ -300,10 +350,10 @@
                                     <%}%>
                                 </td>
                                 <td><%=documento.getCf_piva()%></td>
-                                <!--td><%=documento.getCliente_indirizzo()%></td-->
-                                <td><%=documento.getCliente_comune()%></td>
-                                <td><%=documento.getCliente_provincia()%></td>
-                                
+                                <td>
+                                    <%=documento.getCliente_comune()%>
+                                    <% if(!documento.getCliente_provincia().equals("")){%>(<%=documento.getCliente_provincia()%>)<%}%>
+                                </td>
                                 <td><%=documento.getCliente_cellulare()%></td>
                                 <td style="text-align:right;"><%=Utility.formatta_prezzo(documento.getTotale())%></td>
                                 <td>

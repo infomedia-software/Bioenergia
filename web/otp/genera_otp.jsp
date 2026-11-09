@@ -1,3 +1,5 @@
+<%@page import="gestioneDB.GestioneFinanziamento"%>
+<%@page import="beans.Finanziamento"%>
 <%@page import="gestioneDB.GestioneSoggetto"%>
 <%@page import="gestioneDB.GestioneDocumento"%>
 <%@page import="beans.Soggetto"%>
@@ -8,11 +10,23 @@
 <%@ page import="java.net.URLEncoder" %>
 <%
     String id_documento=Utility.elimina_null(request.getParameter("id_documento")); 
+    String id_finanziamento=Utility.elimina_null(request.getParameter("id_finanziamento")); 
     String mandante=Utility.elimina_null(request.getParameter("mandante")); 
-    Documento documento=GestioneDocumento.getIstanza().get_documento(id_documento);
-    String tel=documento.getCliente_cellulare();
-    if(mandante.equals("si"))
-        tel=documento.getMandante_cellulare();
+    
+    Documento documento=null;
+    Finanziamento finanziamento=null;
+    
+    String tel="";
+    if(!id_documento.equals("")){
+        documento=GestioneDocumento.getIstanza().get_documento(id_documento);
+        tel=documento.getCliente_cellulare();
+        if(mandante.equals("si"))
+            tel=documento.getMandante_cellulare();
+    }
+    if(!id_finanziamento.equals("")){
+        finanziamento=GestioneFinanziamento.getIstanza().get_finanziamento(id_finanziamento);
+        tel=finanziamento.getGarante_cellulare();
+    }
 %>  
      
 <html>
@@ -124,9 +138,17 @@
         <div id="container">
         <jsp:include page="../_menu.jsp"></jsp:include>
         <div id="content">
-                <a class="pulsante" href="<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=id_documento%>">
-                    <i class="fa-solid fa-arrow-left"></i>Torna alla Contratto
-                </a>
+                <% if(!id_documento.equals("")){%>
+                    <a class="pulsante" href="<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=id_documento%>">
+                        <i class="fa-solid fa-arrow-left"></i>Torna alla Contratto
+                    </a>
+                <%}%>
+                <% if(!id_finanziamento.equals("")){%>
+                    <a class="pulsante" href="<%=Utility.url%>/finanziamenti/finanziamento.jsp?id_finanziamento=<%=id_finanziamento%>">
+                        <i class="fa-solid fa-arrow-left"></i>Torna al Finanziamento
+                    </a>
+                <%}%>
+                
                 <div class="otp-card">
                     <div class="otp-title">Genera OTP firma <% if(mandante.equals("")){%>cliente<%}else{%>mandante<%}%></div>
 
@@ -136,6 +158,7 @@
 
                     <form method="post" onsubmit="return confermaInvioOtp();" id='form_genera_otp'>
                         <label for="otp_email" class="otp-label">Numero di Cellulare destinatario OTP</label>
+                        <input type='hidden' name='id_finanziamento' value='<%=id_finanziamento%>'>
                         <input type='hidden' name='id_documento' value='<%=id_documento%>'>
                         <input type="hidden" name="mandante" value="<%=mandante%>">
                         <input type="text" id="otp_sms" name="otp_sms" class="otp-input" value="<%=tel%>" placeholder="" required>
@@ -151,15 +174,24 @@
                                 INVIA OTP
                             </button>
                             <!-- codice presente e non scaduto -> posso verificarlo -->
-                            <% if(mandante.equals("")){%>
-                                <% if(!documento.getOtp_hash().equals("") && documento.getOtp_data_ora_scadenza()!=null && Utility.viene_prima(Utility.data_ora_corrente(), documento.getOtp_data_ora_scadenza()) ){%>
-                                    <div class="height10"></div>
-                                    <a class="pulsante verde float-right" href="<%=Utility.url%>/otp/verifica_otp.jsp?id_documento=<%=id_documento%>">VERIFICA OTP</a>
+                            <% if(documento!=null){%>
+                                <% if(mandante.equals("")){%>
+                                    <% if(!documento.getOtp_hash().equals("") && documento.getOtp_data_ora_scadenza()!=null && Utility.viene_prima(Utility.data_ora_corrente(), documento.getOtp_data_ora_scadenza()) ){%>
+                                        <div class="height10"></div>
+                                        <a class="pulsante verde float-right" href="<%=Utility.url%>/otp/verifica_otp.jsp?id_documento=<%=id_documento%>">VERIFICA OTP</a>
+                                    <%}%>
+                                <%}%>
+
+                                <% if(!mandante.equals("")){%>
+                                    <% if(!documento.getOtp_hash_mandante().equals("") && documento.getOtp_data_ora_scadenza_mandante()!=null && Utility.viene_prima(Utility.data_ora_corrente(), documento.getOtp_data_ora_scadenza_mandante()) ){%>
+                                        <div class="height10"></div>
+                                        <a class="pulsante verde float-right" href="<%=Utility.url%>/otp/verifica_otp.jsp?id_documento=<%=id_documento%>">VERIFICA OTP</a>
+                                    <%}%>
                                 <%}%>
                             <%}%>
                             
-                            <% if(!mandante.equals("")){%>
-                                <% if(!documento.getOtp_hash_mandante().equals("") && documento.getOtp_data_ora_scadenza_mandante()!=null && Utility.viene_prima(Utility.data_ora_corrente(), documento.getOtp_data_ora_scadenza_mandante()) ){%>
+                            <% if(finanziamento!=null){%>
+                                 <% if(!finanziamento.getOtp_hash_garante().equals("") && finanziamento.getOtp_data_ora_scadenza_garante()!=null && Utility.viene_prima(Utility.data_ora_corrente(), finanziamento.getOtp_data_ora_scadenza_garante()) ){%>
                                     <div class="height10"></div>
                                     <a class="pulsante verde float-right" href="<%=Utility.url%>/otp/verifica_otp.jsp?id_documento=<%=id_documento%>">VERIFICA OTP</a>
                                 <%}%>

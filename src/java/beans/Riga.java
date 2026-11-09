@@ -6,12 +6,13 @@
 package beans;
 
 public class Riga {
-
+    public static final String TIPO_DESCRITTIVA="descrittiva";
+    
     private int id;
     private int id_documento;
 
     private String descrizione = "";
-
+    private String tipo = "";
     private double aliquota;
     private double imponibile;
     private double iva;
@@ -110,6 +111,19 @@ public class Riga {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
     
+    
+    
+    public boolean is_descrittiva(){
+        return tipo.equals(TIPO_DESCRITTIVA);
+    }
     
 }

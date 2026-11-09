@@ -1,3 +1,5 @@
+<%@page import="gestioneDB.GestioneFinanziamento"%>
+<%@page import="beans.Finanziamento"%>
 <%@page import="utility.InviaSms"%>
 <%@page import="gestioneDB.GestioneDocumento"%>
 <%@page import="beans.Documento"%>
@@ -6,11 +8,11 @@
 <%@page import="java.util.ArrayList"%>
 <%@ page import="java.io.*" %>
 <%@ page import="java.net.URLEncoder" %>
-
 <%@ page trimDirectiveWhitespaces="true" %>
 <%
     
     String id_documento=Utility.elimina_null(request.getParameter("id_documento"));
+    String id_finanziamento=Utility.elimina_null(request.getParameter("id_finanziamento"));
     String mandante=Utility.elimina_null(request.getParameter("mandante"));
     String otp_sms=Utility.elimina_null(request.getParameter("otp_sms"));
     String otp_codice = String.format("%06d", new SecureRandom().nextInt(1000000));
@@ -72,6 +74,58 @@
                 );
             }
         }
+    }
+    
+    
+    // FINANZIAMENTO
+    if(!id_finanziamento.equals("")){
+        Finanziamento finanziamento=GestioneFinanziamento.getIstanza().get_finanziamento(id_finanziamento);
+        if(finanziamento==null){
+            errore="Finanziamento non trovato.";
+        }else{
+
+
+            String hash_salvato=finanziamento.getOtp_hash_garante();
+            String data_scadenza=finanziamento.getOtp_data_ora_scadenza_garante();
+            String data_verifica=finanziamento.getOtp_data_ora_verifica_garante();
+            String numero_salvato=finanziamento.getOtp_sms_garante();
+            int tentativi_falliti=finanziamento.getOtp_tentativi_falliti_garante();
+
+            if(data_verifica!=null && !data_verifica.equals("")){
+                errore="Finanziamento già validato con OTP dal garante.";
+            }
+
+            else if(otp_sms.equals("") || !otp_sms.matches("[0-9]{9,10}")){
+                errore="Inserire un numero di cellulare valido, senza prefisso internazionale.";
+            }
+
+            else if(tentativi_falliti<limite_tentativi_falliti && !hash_salvato.equals("") && data_scadenza!=null && Utility.viene_prima(Utility.data_ora_corrente(),data_scadenza)){
+                errore="È già stato generato un OTP per il garante.\nInserire l'OTP ricevuto al numero "+numero_salvato;
+            }
+
+            else{
+                String query="UPDATE finanziamento SET "
+                    + "otp_sms_garante="+Utility.is_null(otp_sms)+","
+                    + "otp_hash_garante="+Utility.is_null(otp_hash)+","
+                    + "otp_data_ora_generazione_garante=NOW(),"
+                    + "otp_tentativi_falliti_garante=0,"
+                    + "otp_data_ora_scadenza_garante=DATE_ADD(NOW(),INTERVAL 10 MINUTE),"
+                    + "otp_data_ora_verifica_garante=NULL,"
+                    + "otp_ip_garante='' "
+                    + "WHERE id="+Utility.is_null(id_finanziamento)
+                    + " AND otp_data_ora_verifica_garante IS NULL";
+
+                // Invio SMS
+                try{
+                    InviaSms.invia_sms("39"+otp_sms,testo);
+                    Utility.getIstanza().query(query);
+                }catch(Exception e){
+                    errore="Errore durante la generazione o l'invio del codice OTP.";
+                    System.out.println("Errore OTP finanziamento "+id_finanziamento+": "+e.getMessage());
+                }
+            }
+        }
+
     }
 
     out.print(errore);

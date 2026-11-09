@@ -4,6 +4,33 @@ import utility.Utility;
 
 public class Documento {
 
+    public static final String TIPO_PREVENTIVO="preventivo";
+    public static final String TIPO_CONTRATTO="contratto";
+    
+    // Tipologie contratto
+    public static final String CONTRATTO_FOTOVOLTAICO = "fotovoltaico";
+    public static final String CONTRATTO_FOTOVOLTAICO_ACCUMULO = "fotovoltaico_accumulo";
+    public static final String CONTRATTO_ACCUMULO = "accumulo";
+    public static final String CONTRATTO_FOTOVOLTAICO_ACCUMULO_CONTO_TERMICO = "fotovoltaico_accumulo_conto_termico";
+    public static final String CONTRATTO_CONTO_TERMICO = "conto_termico";
+    
+    // Tipologia preventivo
+    public static final String PREVENTIVO_COLONNINA = "backup";
+    public static final String PREVENTIVO_BACKUP = "colonnina";
+
+    // Finanziamenti
+    public static final String FINANZIAMENTO_NO = "";
+    public static final String FINANZIAMENTO_TASSO_0 = "tasso_0";
+    public static final String FINANZIAMENTO_STANDARD = "standard";
+    
+    // Conto termico
+    public static final String CONTO_TERMICO_POMPA_DI_CALORE = "pompa_di_calore";
+    public static final String CONTO_TERMICO_CALDAIA_IBRIDA = "caldaia_ibrida";
+    
+    private String contratto_tipologia = "";
+    private String contratto_finanziamento = "";
+    private String conto_termico_tipo = "";
+    
     private int id;
     private int id_autore;
     private int id_soggetto;
@@ -32,9 +59,10 @@ public class Documento {
 
     private double imponibile;
     private double iva;
+    private double aliquota;
     private double totale;
     private String gse_prezzi = "";
-
+    private String validita = "";
     private String pagamento = "";
     private String stato = "";
 
@@ -905,6 +933,35 @@ public class Documento {
     public void setAutore(Soggetto autore) {
         this.autore = autore;
     }
+
+    public double getAliquota() {
+        return aliquota;
+    }
+
+    public void setAliquota(double aliquota) {
+        this.aliquota = aliquota;
+    }
+
+    public String getValidita() {
+        return validita;
+    }
+
+    public void setValidita(String validita) {
+        this.validita = validita;
+    }
+    
+    
+    public String getAnno(){
+        if(data==null || data.length()<4)return "";
+            return data.substring(0,4);
+    }
+    
+    public String getCliente_nominativo(){
+        if("privato".equals(cliente_privato_azienda)){
+            return (Utility.elimina_null(cliente_cognome)+" "+Utility.elimina_null(cliente_nome)).trim();
+        }
+        return Utility.elimina_null(cliente_ragione_sociale);
+    }
     
     public String getData_it() {
         if(data==null || data.trim().equals(""))
@@ -1021,6 +1078,22 @@ public class Documento {
     public void setIban(String iban) {
         this.iban = iban;
     }
+
+    public String getContratto_tipologia() {
+        return contratto_tipologia;
+    }
+
+    public void setContratto_tipologia(String contratto_tipologia) {
+        this.contratto_tipologia = contratto_tipologia;
+    }
+
+    public String getContratto_finanziamento() {
+        return contratto_finanziamento;
+    }
+
+    public void setContratto_finanziamento(String contratto_finanziamento) {
+        this.contratto_finanziamento = contratto_finanziamento;
+    }
     
     
     
@@ -1050,6 +1123,87 @@ public class Documento {
         if(mandante_diverso.equals("")) return true;
         else return false;
               
+    }
+    
+    // Tipologie documento
+    public boolean is_preventivo(){
+        return TIPO_PREVENTIVO.equals(tipo);
+    }
+
+    public boolean is_contratto(){
+        return TIPO_CONTRATTO.equals(tipo);
+    }
+
+    // Tipologie contratto
+    public boolean is_contratto_fotovoltaico(){
+        return CONTRATTO_FOTOVOLTAICO.equals(contratto_tipologia);
+    }
+
+    public boolean is_contratto_fotovoltaico_accumulo(){
+        return CONTRATTO_FOTOVOLTAICO_ACCUMULO.equals(contratto_tipologia);
+    }
+
+    public boolean is_contratto_accumulo(){
+        return CONTRATTO_ACCUMULO.equals(contratto_tipologia);
+    }
+
+    public boolean is_contratto_fotovoltaico_accumulo_conto_termico(){
+        return CONTRATTO_FOTOVOLTAICO_ACCUMULO_CONTO_TERMICO.equals(contratto_tipologia);
+    }
+
+    public boolean is_contratto_conto_termico(){
+        return CONTRATTO_CONTO_TERMICO.equals(contratto_tipologia);
+    }
+    
+    public boolean is_preventivo_colonnina(){
+        return PREVENTIVO_COLONNINA.equals(contratto_tipologia);
+    }
+    
+    public boolean is_preventivo_backup(){
+        return PREVENTIVO_BACKUP.equals(contratto_tipologia);
+    }
+
+    public String getConto_termico_tipo() {
+        return conto_termico_tipo;
+    }
+
+    public void setConto_termico_tipo(String conto_termico_tipo) {
+        this.conto_termico_tipo = conto_termico_tipo;
+    }
+    
+    public String getConto_termico_tipo_string() {
+        String toReturn="";
+        if(conto_termico_tipo.equals(CONTO_TERMICO_CALDAIA_IBRIDA))
+            return "Caldaia Ibrida";
+        if(conto_termico_tipo.equals(CONTO_TERMICO_POMPA_DI_CALORE))
+            return "Pompa di Calore";
+        return toReturn;
+    }
+    
+    // Conto termico
+    public boolean is_conto_termico_pompa_di_calore(){
+        return CONTO_TERMICO_POMPA_DI_CALORE.equals(conto_termico_tipo);
+    }
+
+    public boolean is_conto_termico_caldaia_ibrida(){
+        return CONTO_TERMICO_CALDAIA_IBRIDA.equals(conto_termico_tipo);
+    }
+
+    // Finanziamenti
+    public boolean is_senza_finanziamento(){
+        return FINANZIAMENTO_NO.equals(contratto_finanziamento);
+    }
+
+    public boolean is_finanziamento_tasso_0(){
+        return FINANZIAMENTO_TASSO_0.equals(contratto_finanziamento);
+    }
+
+    public boolean is_finanziamento_standard(){
+        return FINANZIAMENTO_STANDARD.equals(contratto_finanziamento);
+    }
+
+    public boolean is_con_finanziamento(){
+        return is_finanziamento_tasso_0() || is_finanziamento_standard();
     }
     
     public String toString(){
