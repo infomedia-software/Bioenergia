@@ -66,7 +66,7 @@
         
     <% if(utente.is_amministratore()){%>
     
-    <a href="<%=Utility.url%>/finanziamenti/index.jsp" class="<%=pagina.contains("/finanziamenti/") ? "attivo" : ""%>" style="display: none;">
+    <a href="<%=Utility.url%>/finanziamenti/index.jsp" class="<%=pagina.contains("/finanziamenti/") ? "attivo" : ""%>">
     <i class="fa-solid fa-hand-holding-dollar"></i>
         <span>Finanziamenti</span>
     </a>

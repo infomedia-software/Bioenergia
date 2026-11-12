@@ -845,7 +845,7 @@
                                 <% if(d.getPagamento().contains("finanziamento")){%>
                                     <% ArrayList<Finanziamento> finanziamenti=GestioneFinanziamento.getIstanza().ricerca_finanziamento(" finanziamento.id_documento="+Utility.is_null(id_documento)+" AND finanziamento.stato='1' ", "", -1); %>
                                     <% if(finanziamenti.isEmpty()){%>
-                                        <button onclick="aggiungi_finanziamento()" style="display: none;" class="pulsante float-right" style="background-color:#7c3aed;color:white;">
+                                        <button onclick="aggiungi_finanziamento()" class="pulsante float-right" style="background-color:#7c3aed;color:white;">
                                             <i class="fa-solid fa-hand-holding-dollar"></i>Crea Pratica Finanziamento
                                         </button>
                                     <%}else{%>
