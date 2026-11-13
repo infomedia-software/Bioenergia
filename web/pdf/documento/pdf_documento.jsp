@@ -1,3 +1,4 @@
+<%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="com.itextpdf.text.Font"%>
 <%@page import="com.itextpdf.text.PageSize"%>
 <%@page import="com.itextpdf.text.BaseColor"%>
@@ -12,13 +13,18 @@
     Soggetto utente=(Soggetto)session.getAttribute("utente");
     String id_documento=Utility.elimina_null(request.getParameter("id_documento"));
     Documento documento=GestioneDocumento.getIstanza().get_documento(id_documento);
-    
+    if(documento==null){
+        response.sendError(404,"Contratto non trovato");
+        return;
+    }
 
     response.setContentType("application/pdf");
-    response.setHeader("Content-Disposition","inline; filename=contratto_"+id_documento+".pdf");
+    response.setHeader("Content-Disposition","inline; filename=contratto_"+documento.getNumero()+".pdf");
+
+    ByteArrayOutputStream baos=new ByteArrayOutputStream();
 
     Document pdf=new Document(PageSize.A4,30,30,25,25);
-    PdfWriter writer=PdfWriter.getInstance(pdf,response.getOutputStream());
+    PdfWriter writer=PdfWriter.getInstance(pdf,baos);
 
     pdf.open();
 
@@ -94,8 +100,17 @@
 
     <jsp:include page="_pagina12.jsp"/>
 <%}%>
+
 <%
     pdf.close();
-    writer.close();
+
+    byte[] pdfBytes=baos.toByteArray();
+
+    response.setContentLength(pdfBytes.length);
+
+    out.clearBuffer();
+    response.getOutputStream().write(pdfBytes);
+    response.getOutputStream().flush();
+
     return;
 %>

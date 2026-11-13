@@ -1,3 +1,4 @@
+<%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="beans.Documento"%>
 <%@page import="gestioneDB.GestioneDocumento"%>
 <%@page import="com.itextpdf.text.Font"%>
@@ -14,17 +15,25 @@
     Soggetto utente=(Soggetto)session.getAttribute("utente");
     String id_finanziamento=Utility.elimina_null(request.getParameter("id_finanziamento"));
     Finanziamento finanziamento=GestioneFinanziamento.getIstanza().get_finanziamento(id_finanziamento);
-    Documento documento=GestioneDocumento.getIstanza().get_documento(finanziamento.getId_documento());
+    
     if(finanziamento==null){
         response.sendError(404,"Finanziamento non trovato");
+        return;
+    }
+
+    Documento documento=GestioneDocumento.getIstanza().get_documento(finanziamento.getId_documento());
+    if(documento==null){
+        response.sendError(404,"Documento associato non trovato");
         return;
     }
 
     response.setContentType("application/pdf");
     response.setHeader("Content-Disposition","inline; filename=finanziamento_"+finanziamento.getNumero()+".pdf");
 
+    ByteArrayOutputStream baos=new ByteArrayOutputStream();
+
     Document pdf=new Document(PageSize.A4,30,30,25,25);
-    PdfWriter writer=PdfWriter.getInstance(pdf,response.getOutputStream());
+    PdfWriter writer=PdfWriter.getInstance(pdf,baos);
 
     pdf.open();
 
@@ -62,4 +71,16 @@
 
     <jsp:include page="_pagina3.jsp"/>
 
-<%pdf.close();%>
+<%
+    pdf.close();
+
+    byte[] pdfBytes=baos.toByteArray();
+
+    response.setContentLength(pdfBytes.length);
+
+    out.clearBuffer();
+    response.getOutputStream().write(pdfBytes);
+    response.getOutputStream().flush();
+
+    return;
+%>

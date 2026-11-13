@@ -301,10 +301,9 @@ private void firma(PdfContentByte sopra,String firma,float x,float y,float largh
     // ================================================
 
     if(!azienda){
-
-        testo(sopra,cliente_nome+" "+cliente_cognome,95,750,8);
+        testo(sopra,cliente_nome+" "+cliente_cognome,100,725,8);
         testo(sopra,d.getCliente_luogo_nascita(),345,725,8);
-        testo(sopra,Utility.converti_data_formato_it(d.getCliente_data_nascita()),50,710,8);
+        testo(sopra,Utility.converti_data_formato_it(d.getCliente_data_nascita()),150,710,8);
 
         testo(sopra,cliente_indirizzo,270,710,8);
         testo(sopra,cliente_comune,100,695,8);

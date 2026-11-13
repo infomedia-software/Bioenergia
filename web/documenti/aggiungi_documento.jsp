@@ -54,8 +54,9 @@
             function seleziona_soggetto(inField){
                 var id_soggetto=inField.getAttribute("id_soggetto");                
                 var contratto_tipologia=$("#contratto_tipologia").val();
+                var conto_termico_tipo=$("#conto_termico_tipo").val();
                 mostra_loader("Recupero dati cliente in corso...");
-                location.href="<%=Utility.url%>/documenti/aggiungi_documento.jsp?tipo=<%=tipo%>&id_soggetto="+id_soggetto+"&contratto_tipologia="+contratto_tipologia;
+                location.href="<%=Utility.url%>/documenti/aggiungi_documento.jsp?tipo=<%=tipo%>&id_soggetto="+id_soggetto+"&contratto_tipologia="+contratto_tipologia+"&conto_termico_tipo="+conto_termico_tipo;
             }
             
             function seleziona_privato_azienda(obj){
@@ -115,7 +116,7 @@
                             <tr>
                                 <th style="width: 125px;">Tipologia Contratto</th>
                                 <td>
-                                    <select id="contratto_tipologia" name="contratto_tipologia" required="true" onchange="seleziona_contratto_tipologia()" class="pointer_events_none">
+                                    <select id="contratto_tipologia" name="contratto_tipologia" required="true" onchange="seleziona_contratto_tipologia()">
                                         <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO%>" <%=contratto_tipologia.equals(Documento.CONTRATTO_FOTOVOLTAICO) ? "selected" : ""%>>Fotovoltaico</option>
                                         <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO%>" <%=contratto_tipologia.equals(Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO) ? "selected" : ""%>>Fotovoltaico + Accumulo</option>
                                         <option value="<%=Documento.CONTRATTO_ACCUMULO%>" <%=contratto_tipologia.equals(Documento.CONTRATTO_ACCUMULO) ? "selected" : ""%>>Accumulo</option>
@@ -128,17 +129,18 @@
                                     </select>
                                 </td>
                             </tr>
-                            <% if(contratto_tipologia.contains("conto_termico")){%>
+                            
                             <tr>
-                                <th>Tipo Conto Termico</th>
+                                <th>PDC</th>
                                 <td>
                                      <select id="conto_termico_tipo" name="conto_termico_tipo" <%if(!utente.is_amministratore()){%>disabled="true" style="pointer-events: none;"<%}%> required="true">
+                                        <option value=""></option>
                                         <option value="<%=Documento.CONTO_TERMICO_POMPA_DI_CALORE%>" <%=conto_termico_tipo.equals(Documento.CONTO_TERMICO_POMPA_DI_CALORE) ? "selected" : ""%>>Pompa di Calore</option>
                                         <option value="<%=Documento.CONTO_TERMICO_CALDAIA_IBRIDA%>" <%=conto_termico_tipo.equals(Documento.CONTO_TERMICO_CALDAIA_IBRIDA) ? "selected" : ""%>>Caldaia Ibrida</option>
                                     </select>
                                 </td>
                             </tr>
-                            <%}%>
+                            
                         </table>
                         <div class="height-10"></div>
                         <h2>

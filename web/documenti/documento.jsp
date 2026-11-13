@@ -443,7 +443,7 @@
                             </label>
                         </td-->
                         <td>Stato</td>
-                        <td>
+                        <td colspan="3">
                             <label>
                                 <select id="id_situazione" onchange="modifica_documento(this);">                                    
                                     <% for(Item sit:GestioneItems.getIstanza().ricerca("documento", "id_situazione")){%>
@@ -452,10 +452,13 @@
                                 </select>
                             </label>
                         </td>
+                        
+                      </tr>
+                      <tr>
                         <td>Tipologia Contratto</td>
                         <td>
                             <label>
-                                <select id="contratto_tipologia" class="pointer_events_none" refresh="si" <%if(!utente.is_amministratore()){%>disabled="true" style="pointer-events: none;"<%}%> onchange="modifica_documento(this);">
+                                <select id="contratto_tipologia" refresh="si" <%if(!utente.is_amministratore()){%>disabled="true" style="pointer-events: none;"<%}%> onchange="modifica_documento(this);">
                                     <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_FOTOVOLTAICO) ? "selected" : ""%>>Fotovoltaico</option>
                                     <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO) ? "selected" : ""%>>Fotovoltaico + Accumulo</option>
                                     <option value="<%=Documento.CONTRATTO_ACCUMULO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_ACCUMULO) ? "selected" : ""%>>Accumulo</option>
@@ -464,17 +467,11 @@
                                 </select>
                             </label>
                         </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="box" id="div_documento_intestazione">
-                <% if(d.is_contratto_conto_termico() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
-                <table>
-                    <tr>
-                        <th>Tipo Conto Termico</th>
-                        <td>
+                        <td>PDC</td>
+                        <td colspan="3">
                             <label>
-                            <select id="conto_termico_tipo" <%if(!utente.is_amministratore()){%>disabled="true" style="pointer-events: none;"<%}%> onchange="modifica_documento(this);">
+                            <select id="conto_termico_tipo" class="no_controllo" <%if(!utente.is_amministratore()){%>disabled="true" style="pointer-events: none;"<%}%> onchange="modifica_documento(this);">
+                                <option value=""></option>
                                 <option value="<%=Documento.CONTO_TERMICO_POMPA_DI_CALORE%>" <%=d.is_conto_termico_pompa_di_calore() ? "selected" : ""%>>Pompa di Calore</option>
                                 <option value="<%=Documento.CONTO_TERMICO_CALDAIA_IBRIDA%>" <%=d.is_conto_termico_caldaia_ibrida() ? "selected" : ""%>>Caldaia Ibrida</option>
                             </select>
@@ -482,8 +479,11 @@
                         </td>
                     </tr>
                 </table>
+            </div>
+            <div class="box" id="div_documento_intestazione">
+                
                 <div class="height-10"></div>
-                <%}%>
+                
                 <div class="col_60 float-left">
                     <h2>
                         Dati Cliente

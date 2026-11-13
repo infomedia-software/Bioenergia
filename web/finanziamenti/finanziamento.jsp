@@ -74,16 +74,18 @@
         });
         
         </script>
-        
+        <style>
+            a,button{pointer-events: auto !important;}
+        </style>
     </head>
     <body>
         
-        <div id="container">
+        <div id="container" <%if(utente.is_gestore()){%> class="pointer_events_none"<%}%>>
             <jsp:include page="../_menu.jsp"></jsp:include>
             <div id="content">
             <h1><%=f.toString()%> - <%=d.toString()%></h1>
             <div class="box">
-                <a class="pulsante" href="<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=d.getId()%>">
+                <a class="pulsante"  href="<%=Utility.url%>/documenti/documento.jsp?id_documento=<%=d.getId()%>">
                     <i class="fa-solid fa-arrow-left"></i>Torna al Contratto
                 </a>
                     <button class="pulsante cancella float-right" onclick="modifica_finanziamento(this)" id="stato" value="-1">

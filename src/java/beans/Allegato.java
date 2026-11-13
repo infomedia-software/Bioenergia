@@ -11,8 +11,7 @@ public class Allegato {
     private String stato;
 
     
-    public Allegato(){
-        
+    public Allegato(){    
     }
     
     public int getId() {

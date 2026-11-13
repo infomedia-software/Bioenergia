@@ -49,7 +49,7 @@
                     }
 
                     if(inField.getAttribute("refresh")=="si"){
-                        aggiorna_documento_intestazione(inField);
+                        location.reload();
                     }
                 },
                 error: function(){                    
@@ -57,6 +57,7 @@
                 }
             });
         }
+                
         </script>
     </head>
     <body>
@@ -99,18 +100,63 @@
                                 </select>
                             </td>
                         </tr>
-                        <% if(d.is_contratto()){%>
-                        <tr>
-                            <td style="vertical-align: top;">
-                                <label>IBAN</label><br>
-                                <input type="text" value="<%=d.getIban()%>" id="iban" onchange="modifica_documento(this)">
-                            </td>
+                    </table>
+                    <table>
+                         <tr>
+                            <td>Tipologia Contratto</td>
                             <td>
-                                <label>Note Interne</label><br>
-                                <textarea id="note1" onchange="modifica_documento(this)" class="no_controllo"><%=Utility.elimina_null(Utility.standardizza_testo_textarea(d.getNote1()))%></textarea>
+                                <label>
+                                    <select id="contratto_tipologia" refresh="si"  onchange="modifica_documento(this);">
+                                        <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_FOTOVOLTAICO) ? "selected" : ""%>>Fotovoltaico</option>
+                                        <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO) ? "selected" : ""%>>Fotovoltaico + Accumulo</option>
+                                        <option value="<%=Documento.CONTRATTO_ACCUMULO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_ACCUMULO) ? "selected" : ""%>>Accumulo</option>
+                                        <option value="<%=Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO_CONTO_TERMICO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_FOTOVOLTAICO_ACCUMULO_CONTO_TERMICO) ? "selected" : ""%>>Fotovoltaico + Accumulo + Conto Termico</option>
+                                        <option value="<%=Documento.CONTRATTO_CONTO_TERMICO%>" <%=d.getContratto_tipologia().equals(Documento.CONTRATTO_CONTO_TERMICO) ? "selected" : ""%>>Conto Termico</option>
+                                    </select>
+                                </label>
+                            </td>
+                            <td>PDC</td>
+                            <td colspan="3">
+                                <label>
+                                <select id="conto_termico_tipo" class="no_controllo" onchange="modifica_documento(this);">
+                                    <option value=""></option>
+                                    <option value="<%=Documento.CONTO_TERMICO_POMPA_DI_CALORE%>" <%=d.is_conto_termico_pompa_di_calore() ? "selected" : ""%>>Pompa di Calore</option>
+                                    <option value="<%=Documento.CONTO_TERMICO_CALDAIA_IBRIDA%>" <%=d.is_conto_termico_caldaia_ibrida() ? "selected" : ""%>>Caldaia Ibrida</option>
+                                </select>
+                                </label>
                             </td>
                         </tr>
-                        <%}%>
+
+                    </table>
+                                
+                    <% if(d.is_contratto()){%>
+                    <table>
+                    <tr>
+                        <td style="vertical-align: top;">
+                            <label>IBAN</label><br>
+                            <input type="text" value="<%=d.getIban()%>" id="iban" onchange="modifica_documento(this)">
+                        </td>
+                        <td>
+                            <label>Note Interne</label><br>
+                            <textarea id="note1" onchange="modifica_documento(this)" class="no_controllo"><%=Utility.elimina_null(Utility.standardizza_testo_textarea(d.getNote1()))%></textarea>
+                        </td>
+                    </tr>
+                    </table>
+                    <%}%>
+                    
+                </div>
+                
+                <div class="height-10"></div>
+                <div class="box">
+                    <table>
+                        <tr>
+                            <td>Osservazioni</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <%=Utility.elimina_null(d.getOsservazioni())%>
+                            </td>
+                        </tr>
                     </table>
                 </div>
                     

@@ -81,6 +81,11 @@
         Utility.getIstanza().query("UPDATE documento SET id_situazione=8,validita='7 giorni', modalita_pagamento="+Utility.is_null("30% acconto<br>70% entro 7 giorni da installazione")+" WHERE id="+Utility.is_null(id_documento));
     }
     
+    if(tipo.equals(Documento.TIPO_CONTRATTO) && ( contratto_tipologia.contains("conto_termico") || !conto_termico_tipo.equals("")) ){
+        String osservazioni="il cliente si impegna ad aumentare la potenza del contatore a 6 kW prima dell’installazione. Qualora tale adeguamento non venga effettuato entro tale data, non potremo essere ritenuti responsabili di eventuali disservizi o malfunzionamenti derivanti da una potenza insufficiente.";
+        Utility.getIstanza().query("UPDATE documento SET osservazioni="+Utility.is_null(osservazioni)+" WHERE id="+Utility.is_null(id_documento));
+    }
+    
     // Pagamenti
     Utility.getIstanza().query_insert("INSERT INTO pagamento(entrata_uscita,id_documento,id_soggetto, id_autore, descrizione, stato) VALUES ('entrata',"+Utility.is_null(id_documento)+","+Utility.is_null(id_soggetto)+","+Utility.is_null(utente.getId())+",'al momento della stipula del presente contratto','1')");
     Utility.getIstanza().query_insert("INSERT INTO pagamento(entrata_uscita,id_documento,id_soggetto,id_autore,descrizione,stato) VALUES ('entrata',"+Utility.is_null(id_documento)+","+Utility.is_null(id_soggetto)+","+Utility.is_null(utente.getId())+",'al momento dell''avviso della merce pronta','1')");

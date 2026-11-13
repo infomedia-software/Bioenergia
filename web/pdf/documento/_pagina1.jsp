@@ -362,7 +362,7 @@
     if(documento.getPagamento().contains("pagamento")){
         pagamenti.add("X "+documento.getModalita_pagamento().toUpperCase()+" intestato a \"Bioenergia S.r.l.\"\n");
     for(Pagamento p:GestionePagamento.getIstanza().ricerca_pagamento(" percentuale>0 AND finanziamento='' AND id_documento="+id_documento, "", -1)){
-        pagamenti.add("\u00A0\u00A0\u00A0\u00A0- € "+Utility.formatta_prezzo_no_valuta(p.getImporto())+" "+p.getDescrizione()+"\n");
+        pagamenti.add("\u00A0\u00A0\u00A0\u00A0- € "+Utility.formatta_prezzo_no_valuta(p.getImporto())+" "+"("+Utility.elimina_zero(p.getPercentuale())+"%) "+p.getDescrizione()+"\n");
         }
     }else{
         //pagamenti.add("◦ "+documento.getModalita_pagamento().toUpperCase()+" intestato a \"Bioenergia S.r.l.\"\n");
@@ -371,7 +371,7 @@
     if(documento.getPagamento().contains("finanziamento")){
         pagamenti.add("X Erogazione in favore di “Bioenergia S.r.l.” del finanziamento sottoscritto dal cliente.\n");
         for(Pagamento p:GestionePagamento.getIstanza().ricerca_pagamento(" percentuale>0 AND finanziamento='si' AND id_documento="+id_documento, "", -1)){
-            pagamenti.add("\u00A0\u00A0\u00A0\u00A0- € "+Utility.formatta_prezzo_no_valuta(p.getImporto())+" "+p.getDescrizione()+"\n");
+            pagamenti.add("\u00A0\u00A0\u00A0\u00A0- € "+Utility.formatta_prezzo_no_valuta(p.getImporto())+" "+"("+Utility.elimina_zero(p.getPercentuale())+"%) "+p.getDescrizione()+"\n");
         }
     }else{
         pagamenti.add("Nessuna Erogazione in favore di “Bioenergia S.r.l.” del finanziamento sottoscritto dal cliente.\n");
