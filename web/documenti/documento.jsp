@@ -1105,8 +1105,10 @@
                             </tr>
                         </table>
                 </div>
+                <%}%>
 
-                <!-- DATI DELL'IMMBILE -->
+                <!-- DATI DELL'IMMOBILE -->
+                <% if(d.is_contratto_fotovoltaico() || d.is_contratto_accumulo() || d.is_contratto_fotovoltaico_accumulo() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
                 <div class="box">
                     <h2>Dati dell'immobile</h2>
                     <table style="width:100%;">
@@ -1222,8 +1224,9 @@
                         </tr>
                     </table>
                 </div>
-                            
-                            
+                <%}%>         
+                    
+                <% if(d.is_contratto_fotovoltaico() || d.is_contratto_fotovoltaico_accumulo() || d.is_contratto_fotovoltaico_accumulo_conto_termico()){%>
                 <div class="box">
                     <h2>Allegato "GSE"</h2>
                     <table>
