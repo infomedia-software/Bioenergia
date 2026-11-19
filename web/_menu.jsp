@@ -70,8 +70,7 @@
     <i class="fa-solid fa-hand-holding-dollar"></i>
         <span>Finanziamenti</span>
     </a>
-    <% if(utente.is_amministratore()){%>
-    
+    <% if(utente.is_amministratore() || utente.is_gestore()){%>
     <div class="menu-gruppo <%=menu_anagrafiche ? "aperto" : ""%>">
         <a href="javascript:void(0);" class="menu-voce" onclick="$(this).closest('.menu-gruppo').toggleClass('aperto');">
             <i class="fa-solid fa-address-book"></i>
@@ -79,12 +78,13 @@
             <i class="fa-solid fa-chevron-down menu-freccia"></i>
         </a>
         <div class="sottomenu">
+            <%if(utente.is_amministratore() ){%>
             <a href="<%=Utility.url%>/soggetto/lista_soggetto.jsp?tipologia=CLIENTE" class="<%=menu_cliente ? "attivo" : ""%>">
                 <i class="fa-solid fa-users"></i>
                 <span>Clienti</span>
             </a>
-            
-            <%if(utente.is_amministratore()){%>
+            <%}%>
+            <%if(utente.is_amministratore() || utente.is_gestore()){%>
             <a href="<%=Utility.url%>/utente/lista_utente.jsp" class="<%=pagina.endsWith("lista_utente.jsp") ? "attivo" : ""%>">
                 <i class="fa-solid fa-user-group"></i>
                 <span>Utenti</span>

@@ -8,7 +8,7 @@
     
     Soggetto utente_sessione=(Soggetto)session.getAttribute("utente");
     
-    if(!utente_sessione.is_amministratore()){
+    if(!utente_sessione.is_amministratore() && !utente_sessione.is_gestore()){
         response.sendRedirect(Utility.url+"/errore.jsp?errore=Account%20non%20abilitato");
         return;
     }
