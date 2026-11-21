@@ -34,36 +34,41 @@ public class GestioneFinanziamento {
         return toReturn;
     }
 
-    public ArrayList<Finanziamento> ricerca_finanziamento(
-            String query_input, String ordinamento, int offset) {
+    
+    public ArrayList<Finanziamento> ricerca_finanziamento(String query_input, String ordinamento, int offset) {
 
-        ArrayList<Finanziamento> toReturn = new ArrayList<Finanziamento>();
+        ArrayList<Finanziamento> toReturn=new ArrayList<Finanziamento>();
 
         String query="SELECT finanziamento.*, documento.numero AS contratto_numero "
-            + "FROM finanziamento "
-            + "LEFT JOIN documento ON documento.id=finanziamento.id_documento "
-            + "WHERE finanziamento.stato='1' ";
+            +"FROM finanziamento "
+            +"LEFT JOIN documento ON documento.id=finanziamento.id_documento "
+            +"WHERE finanziamento.stato='1' ";
 
-        if (query_input != null && !query_input.trim().equals("")) {
-            query += " AND (" + query_input + ")";
+        if(query_input!=null && !query_input.trim().equals("")){
+            query+=" AND ("+query_input+")";
         }
 
-        if (ordinamento != null && !ordinamento.trim().equals("")) {
-            query += " ORDER BY " + ordinamento;
+        if(ordinamento!=null && !ordinamento.trim().equals("")){
+            query+=" ORDER BY "+ordinamento;
         }
 
-        if (offset >= 0) {
-            query += " LIMIT " + offset + "," + Utility.righe_pagina;
+        if(offset>=0){
+            query+=" LIMIT "+offset+","+Utility.righe_pagina;
         }
 
-        try (
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery()
-        ) {
+        Connection conn=null;
+        PreparedStatement stmt=null;
+        ResultSet rs=null;
 
-            while (rs.next()) {
-                Finanziamento f = new Finanziamento();
+        try{
+            conn=DBConnection.getConnection();
+            stmt=conn.prepareStatement(query);
+            rs=stmt.executeQuery();
+
+            while(rs.next()){
+
+                Finanziamento f=new Finanziamento();
+
                 // Dati generali
                 f.setId(rs.getInt("id"));
                 f.setId_documento(rs.getString("id_documento"));
@@ -161,11 +166,16 @@ public class GestioneFinanziamento {
                 toReturn.add(f);
             }
 
-        } catch (Exception e) {
-            System.out.println("ERRORE GestioneFinanziamento.ricerca_finanziamento: " + e.getMessage());
+        }catch(Exception e){
+            System.out.println("ERRORE GestioneFinanziamento.ricerca_finanziamento: "+e.getMessage());
             e.printStackTrace();
+        }finally{
+            DBUtility.closeQuietly(rs);
+            DBUtility.closeQuietly(stmt);
+            DBConnection.releaseConnection(conn);
         }
 
         return toReturn;
     }
+
 }
